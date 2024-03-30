@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Production -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js" integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.1.0/angular-ui-router.min.js" integrity="sha512-BWLZUPMCCZGKazkRadkF9YXKQcVv1uAsyfvVx7T6pojT72iTrD6wegUBpaF8H3dCpLOeMDeXu+W58qgqZ0iwvA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.8.3/angular-locale_en-my.min.js" integrity="sha512-WSWyZkpntVmMW7xGqSCIvzo+rcA5egXt8CqtF7yKKeZDeXdr1C2VBNXbdbqkqdUNB/U3XDAYCXj4j6iOKbR2+g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.19.1/angular-translate.min.js" integrity="sha512-VPXZaMZPvymr4fluxtwgy0IyijHmHyRyXaDXJj/u/jD4EB6k3+cjON16jvRNHYjfP7rJm8qDKaY6DidYcFhK9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.8.3/angular-sanitize.min.js" integrity="sha512-dqbRITjlgYAKHWHwL8fK7VPOsFc702ybywomtYLRcjOzBHM3WgEGN0SQQR6IJKY4ZiJiZkNguOAcFZmalk+2sA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-local-storage/0.7.1/angular-local-storage.min.js" integrity="sha512-yWX1m55U20QL68bXLTVHQAQMU11QiUXkLk3fdOexChYv31QpXisXO9EiZVDyfVeU2fhHncq72bsVmB4flwEn8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+  <!-- Development -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.js" integrity="sha512-klc+qN5PPscoGxSzFpetVsCr9sryi2e2vHwZKq43FdFyhSAa7vAqog/Ifl8tzg/8mBZiG2MAKhyjH5oPJp65EA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.1.0/angular-ui-router.js" integrity="sha512-ftmRxP7cYZRj3uBVtTLTXU8QwkcOu2fuVaWqyKpMS40CVRns5TtQGesezvqGI+Eb6B+SuUQLjoHYdoJvDcD7/w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <!-- Module -->
+  <script type="text/javascript" src="app.module.js"></script>
+  <script type="text/javascript" src="app.config.js"></script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+</head>
+
+<body>
+  <div ng-app="app" ng-init="qty=1;cost=2">
+    <b>Invoice:</b>
+    <div>
+      Quantity: <input type="number" min="0" ng-model="qty">
+    </div>
+    <div>
+      Costs: <input type="number" min="0" ng-model="cost">
+    </div>
+    <div>
+      <b>Total:</b> {{qty * cost | currency}}
+    </div>
+  </div>
+
+</body>
+
+</html>

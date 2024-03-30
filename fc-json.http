@@ -1,0 +1,26 @@
+@base_url = http://web.fc.utm.my/ttms
+@url = {{base_url}}/web_man_webservice_json.cgi?
+@username = 12085
+@password = S808323
+@session = 595745238161911
+@session_admin = 281684885791768
+@sesi = 2023/2024
+@semester = 2
+### Login
+GET {{url}}entity=authentication&login={{username}}&password={{password}}
+### Admin Login
+GET {{base_url}}/auth-admin.php?session_id={{session}}
+
+
+
+### Session Semester
+GET {{url}}entity=sesisemester HTTP/1.1
+
+### Subject
+GET {{url}}entity=subjek&sesi={{sesi}}&semester={{semester}} HTTP/1.1
+
+### Lecturer
+GET {{url}}entity=pensyarah&session_id={{session_admin}}&sesi=2023/2024&semester=2
+
+### Student
+GET {{url}}entity=pelajar&session_id={{session_admin}}&sesi={{sesi}}&semester={{semester}}&limit=2&offset=3
