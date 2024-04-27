@@ -10,9 +10,15 @@
 - angular.js v1.8.3
 - angular-i18n v1.8.3
 - angular-sanitize v1.8.3
+- angular-animate v1.8.3
 - angular-translate v2.19.1
-- angular-local-storage v0.7.1
-- UI-Router v1.1.0
+- ngstorage v0.3.11
+- angular-ui-router v1.1.0
+
+# Design
+- Fonts - Montserrat
+- CSS - Bulma CSS
+- Icons - Font Awesome 6.5.2
 
 # Feature
 - 
