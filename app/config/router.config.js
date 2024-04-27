@@ -22,7 +22,8 @@
     var dashboard = {
       name: 'dashboard',
       url: '/dashboard',
-      template: '<h1>Coming Soon</h1> ',
+      templateUrl: 'dashboard/dashboard.html',
+      // controller: 'DashboardController as dashboard',
     }
 
     $stateProvider.state(login);
