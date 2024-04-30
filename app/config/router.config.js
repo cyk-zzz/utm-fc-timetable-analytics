@@ -15,7 +15,6 @@
       name: 'login',
       url: '/login',
       templateUrl: 'login/login.html',
-      controller: 'LoginController as login',
     }
 
 
