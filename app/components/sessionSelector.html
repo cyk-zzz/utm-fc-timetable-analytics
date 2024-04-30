@@ -1,8 +1,8 @@
 <div ng-controller="SessionController as session">
     <label class="label">Select Session Semester</label>
     <div class="select">
-        <select ng-model="session.storage.selectedSession" ng-change="session.selectSession(session.storage.selectedSession)">
-            <option ng-repeat="ss in session.storage.sessions" value="{{ss.sesi_semester_id}}">
+        <select ng-model="session.selectedSession" ng-change="session.selectedSession()" ng-model-options=" {getterSetter: true }">
+            <option ng-repeat="ss in session.getSessions()" value="{{ss.sesi_semester_id}}">
                 {{ss.sesi}} - {{ss.semester}}
             </option>
         </select>
