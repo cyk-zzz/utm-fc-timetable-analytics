@@ -1,0 +1,58 @@
+<div class="columns m-1">
+
+    <div class="column">
+        <ng-include class="box" src="'components/sidenav.html'"></ng-include>
+    </div>
+
+    <div class="column is-10">
+        <ng-include class="box" src="'components/title.html'"></ng-include>
+        <ng-include class="box" src="'components/sessionSelector.html'"></ng-include>
+        <div class="box" ng-controller="WorkloadController as workload">
+            <label class="label">Sort By</label>
+
+            <div class="block">
+                <button class="button is-primary" ng-click="workload.sortByLecturer()">Lecturer Name</button>
+                <button class="button is-primary" ng-click="workload.sortBySubject()">Subjects</button>
+                <button class="button is-primary" ng-click="workload.sortBySection()">Sections</button>
+                <button class="button is-primary" ng-click="workload.sortByStudent()">Students</button>
+                <button class="button is-primary" ng-click="workload.sortByOverallWorkload()">Overall Workload</button>
+            </div>
+
+            <table class="table is-narrow is-striped is-bordered">
+                <thead>
+                    <tr>
+                        <th>Lecturer Name</th>
+
+                        <th>Subjects</th>
+                        <th>Normalized Subjects</th>
+
+                        <th>Sections</th>
+                        <th>Normalized Sections</th>
+
+                        <th>Students</th>
+                        <th>Normalized Students</th>
+
+                        <th>Overall Workload</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="lecturer in workload.getWorkload()">
+                        <td>{{ lecturer.nama }}</td>
+
+                        <td>{{ lecturer.bil_subjek }}</td>
+                        <td>{{ lecturer.bil_subjek_norm | number : 3 }}</td>
+
+                        <td>{{ lecturer.bil_seksyen }}</td>
+                        <td>{{ lecturer.bil_seksyen_norm | number : 3 }}</td>
+
+                        <td>{{ lecturer.bil_pelajar }}</td>
+                        <td>{{ lecturer.bil_pelajar_norm | number : 3 }}</td>
+
+                        <td>{{ lecturer.overall_workload | number : 3 }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
