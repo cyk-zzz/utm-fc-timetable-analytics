@@ -1,0 +1,23 @@
+<div class="hero-body" ng-controller="LoginController as login">
+    <div class="container is-max-desktop">
+        <form class="box">
+            <h1 class="title has-text-centered">FC UTM Timetable Analytics</h1>
+            <div class="field">
+                <label class="label">Username</label>
+                <div class="control">
+                    <input class="input" type="text" ng-model="login.username" placeholder="A20EC...." />
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label">Password</label>
+                <div class="control">
+                    <input class="input" type="password" ng-model="login.password" placeholder="********" />
+                </div>
+            </div>
+
+            <button class="button is-primary" ng-click="login.login()" ng-class="{true:'is-loading', false:''}[login.loading]">Login</button>
+            <button class="button is-primary" ng-click="login.logout()">Log Out</button>
+        </form>
+    </div>
+</div>

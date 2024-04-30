@@ -1,22 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
   <!-- Production -->
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js" integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.1.0/angular-ui-router.min.js" integrity="sha512-BWLZUPMCCZGKazkRadkF9YXKQcVv1uAsyfvVx7T6pojT72iTrD6wegUBpaF8H3dCpLOeMDeXu+W58qgqZ0iwvA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.8.3/angular-locale_en-my.min.js" integrity="sha512-WSWyZkpntVmMW7xGqSCIvzo+rcA5egXt8CqtF7yKKeZDeXdr1C2VBNXbdbqkqdUNB/U3XDAYCXj4j6iOKbR2+g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.19.1/angular-translate.min.js" integrity="sha512-VPXZaMZPvymr4fluxtwgy0IyijHmHyRyXaDXJj/u/jD4EB6k3+cjON16jvRNHYjfP7rJm8qDKaY6DidYcFhK9Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.8.3/angular-sanitize.min.js" integrity="sha512-dqbRITjlgYAKHWHwL8fK7VPOsFc702ybywomtYLRcjOzBHM3WgEGN0SQQR6IJKY4ZiJiZkNguOAcFZmalk+2sA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-local-storage/0.7.1/angular-local-storage.min.js" integrity="sha512-yWX1m55U20QL68bXLTVHQAQMU11QiUXkLk3fdOexChYv31QpXisXO9EiZVDyfVeU2fhHncq72bsVmB4flwEn8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.min.js"
+    integrity="sha512-KZmyTq3PLx9EZl0RHShHQuXtrvdJ+m35tuOiwlcZfs/rE7NZv29ygNA8SFCkMXTnYZQK2OX0Gm2qKGfvWEtRXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.8.3/angular-sanitize.min.js"
+    integrity="sha512-dqbRITjlgYAKHWHwL8fK7VPOsFc702ybywomtYLRcjOzBHM3WgEGN0SQQR6IJKY4ZiJiZkNguOAcFZmalk+2sA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.8.3/angular-locale_en-my.min.js"
+    integrity="sha512-WSWyZkpntVmMW7xGqSCIvzo+rcA5egXt8CqtF7yKKeZDeXdr1C2VBNXbdbqkqdUNB/U3XDAYCXj4j6iOKbR2+g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-animate/1.8.3/angular-animate.min.js"
+    integrity="sha512-Vhup4/4s+jnmiFsp1Sg1/6jXncRbIBc+fKemYjq1n+nEXthmeASyaWnClWsAV5Sas7WbLMLNYYHw6TxwQE4oPQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.1.0/angular-ui-router.min.js"
+    integrity="sha512-BWLZUPMCCZGKazkRadkF9YXKQcVv1uAsyfvVx7T6pojT72iTrD6wegUBpaF8H3dCpLOeMDeXu+W58qgqZ0iwvA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.19.1/angular-translate.min.js"
+    integrity="sha512-VPXZaMZPvymr4fluxtwgy0IyijHmHyRyXaDXJj/u/jD4EB6k3+cjON16jvRNHYjfP7rJm8qDKaY6DidYcFhK9Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.min.js"
+    integrity="sha512-/uxeq6VcJ+do+PtGgWZwRL/Z63r53cK6yek3NzvQwce6aCeheKRD59IuRsEFuNU8b0B/lZ6fUx1fncf0wMIm5Q=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
   <!-- Development -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.js" integrity="sha512-klc+qN5PPscoGxSzFpetVsCr9sryi2e2vHwZKq43FdFyhSAa7vAqog/Ifl8tzg/8mBZiG2MAKhyjH5oPJp65EA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.1.0/angular-ui-router.js" integrity="sha512-ftmRxP7cYZRj3uBVtTLTXU8QwkcOu2fuVaWqyKpMS40CVRns5TtQGesezvqGI+Eb6B+SuUQLjoHYdoJvDcD7/w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.js"
+    integrity="sha512-klc+qN5PPscoGxSzFpetVsCr9sryi2e2vHwZKq43FdFyhSAa7vAqog/Ifl8tzg/8mBZiG2MAKhyjH5oPJp65EA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.1.0/angular-ui-router.js"
+    integrity="sha512-ftmRxP7cYZRj3uBVtTLTXU8QwkcOu2fuVaWqyKpMS40CVRns5TtQGesezvqGI+Eb6B+SuUQLjoHYdoJvDcD7/w=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.8.3/angular-locale_en-my.min.js"
+    integrity="sha512-WSWyZkpntVmMW7xGqSCIvzo+rcA5egXt8CqtF7yKKeZDeXdr1C2VBNXbdbqkqdUNB/U3XDAYCXj4j6iOKbR2+g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.19.1/angular-translate.js"
+    integrity="sha512-6OW/mHzHtmIX4oH1C1FXbEn/h+0Ukbq9tpk22uk1cQyCrDY62rVYFCVUSUfbJJxBz1BK1L1y0vNfMjmeGL+Rvw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.8.3/angular-sanitize.js"
+    integrity="sha512-WsrQol2t85bun8XdIkjqTbNLgY54bCBgVZw+B+00eVritDAlCAcfYo92/53rFp63cKZpDa7t5r5lDDeKFcbUAQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.js"
+    integrity="sha512-c2T3C9cjX/WQscZb+Qws0CqbPujwNik3JPOzn4r/PwHDYdIVxC+LXOY51+4qAsR2wutl7iC0at47X1EIroFq5A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 
   <!-- Module -->
   <script type="text/javascript" src="app.module.js"></script>
-  <script type="text/javascript" src="app.config.js"></script>
+  <script type="text/javascript" src="app.constant.js"></script>
+
+  <!-- Config -->
+  <script type="text/javascript" src="config/logging.config.js"></script>
+  <script type="text/javascript" src="config/router.config.js"></script>
+  <script type="text/javascript" src="config/translate.config.js"></script>
+
+  <!-- Service -->
+  <script type="text/javascript" src="services/auth.service.js"></script>
+  <script type="text/javascript" src="services/session.service.js"></script>
+  <script type="text/javascript" src="services/lecturer.service.js"></script>
+
+  <!-- Controller -->
+  <script type="text/javascript" src="login/login.controller.js"></script>
+  <script type="text/javascript" src="dashboard/session.controller.js"></script>
+  <script type="text/javascript" src="dashboard/workload.controller.js"></script>
+
+  <!-- Styling -->
+  <link rel="stylesheet" href="app.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet" />
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,19 +86,12 @@
 </head>
 
 <body>
-  <div ng-app="app" ng-init="qty=1;cost=2">
-    <b>Invoice:</b>
-    <div>
-      Quantity: <input type="number" min="0" ng-model="qty">
-    </div>
-    <div>
-      Costs: <input type="number" min="0" ng-model="cost">
-    </div>
-    <div>
-      <b>Total:</b> {{qty * cost | currency}}
-    </div>
-  </div>
+  <div ng-app="app" ng-init="" class="hero is-fullheight">
 
+    <ui-view class="hero is-fullheight"></ui-view>
+
+    <ng-include class="" src="'components/footer.html'"></ng-include>
+  </div>
 </body>
 
 </html>
