@@ -54,28 +54,36 @@
         }
 
         function calculateWorkload(lecturers) {
+            let size = lecturers.length;
 
-            // var workload = !$localStorage.test ? new Map() : new Map(JSON.parse($localStorage.test));
-            // workload.set($localStorage.selectedSession, lecturers);
-
-            const size = lecturers.length;
-
-            const maxStudents = lecturers.reduce((a, b) => a.bil_pelajar > b.bil_pelajar ? a : b).bil_pelajar;
-            const maxSubjects = lecturers.reduce((a, b) => a.bil_subjek > b.bil_subjek ? a : b).bil_subjek;
-            const maxSections = lecturers.reduce((a, b) => a.bil_seksyen > b.bil_seksyen ? a : b).bil_seksyen;
-
+            const maxStudents = lecturers.reduce((a, b) => a.bil_pelajar > b.bil_pelajar ? a : b).bil_pelajar;           
             const minStudents = lecturers.reduce((a, b) => a.bil_pelajar < b.bil_pelajar ? a : b).bil_pelajar;
+
+            const maxSubjects = lecturers.reduce((a, b) => a.bil_subjek > b.bil_subjek ? a : b).bil_subjek;
             const minSubjects = lecturers.reduce((a, b) => a.bil_subjek < b.bil_subjek ? a : b).bil_subjek;
+
+            const maxSections = lecturers.reduce((a, b) => a.bil_seksyen > b.bil_seksyen ? a : b).bil_seksyen;
             const minSections = lecturers.reduce((a, b) => a.bil_seksyen < b.bil_seksyen ? a : b).bil_seksyen;
 
             for (var i = 0; i < size; i++) {
                 lecturers[i].bil_pelajar_norm = normalize(lecturers[i].bil_pelajar, maxStudents, minStudents);
                 lecturers[i].bil_subjek_norm = normalize(lecturers[i].bil_subjek, maxSubjects, minSubjects);
                 lecturers[i].bil_seksyen_norm = normalize(lecturers[i].bil_seksyen, maxSections, minSections);
+                lecturers[i].sum_normalized = lecturers[i].bil_pelajar_norm + lecturers[i].bil_subjek_norm + lecturers[i].bil_seksyen_norm
             }
 
-            // $localStorage.test = JSON.stringify([...workload]);
-            $localStorage.test = lecturers;
+            const maxNormalized = lecturers.reduce((a, b) => a.sum_normalized > b.sum_normalized ? a : b).sum_normalized;
+            const minNormalized = lecturers.reduce((a, b) => a.sum_normalized < b.sum_normalized ? a : b).sum_normalized;
+
+            for (var i = 0; i < size; i++) {
+                lecturers[i].overall_workload = normalize(lecturers[i].sum_normalized, maxNormalized, minNormalized);
+            }
+
+            $localStorage.workload = lecturers;
+
+            // var workloadMap = !$localStorage.workloadMap ? new Map() : new Map(JSON.parse($localStorage.workloadMap));
+            // workloadMap.set($localStorage.selectedSession, lecturers);
+            // $localStorage.workloadMap = JSON.stringify([...workloadMap]);
         }
 
         function normalize(val, max, min) {
