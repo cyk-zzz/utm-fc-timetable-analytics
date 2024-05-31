@@ -5,40 +5,40 @@
         .module('app')
         .controller('WorkloadController', WorkloadController)
 
-    WorkloadController.$inject = ['$log', '$localStorage', 'LecturerService', 'SessionService'];
+    WorkloadController.$inject = ['$log', 'LecturerService'];
 
-    function WorkloadController($log, $localStorage, LecturerService, SessionService) {
+    function WorkloadController($log, LecturerService) {
         var vm = this;
 
         vm.getWorkload = getWorkload;
         vm.sortByLecturer = sortByLecturer;
         vm.sortBySubject = sortBySubject;
-        vm.sortBySection = sortBySection;
+        vm.sortByWeeklyClasses = sortByWeeklyClasses;
         vm.sortByStudent = sortByStudent;
         vm.sortByOverallWorkload = sortByOverallWorkload;
 
         function getWorkload() {
-            return $localStorage.workload;
+            return LecturerService.getCurrentWorkload();
         }
 
         function sortByLecturer() {
-            $localStorage.workload.sort((a, b) => a.nama.localeCompare(b.nama));
+            LecturerService.getCurrentWorkload().sort((a, b) => a.nama.localeCompare(b.nama));
         }
 
         function sortBySubject() {
-            $localStorage.workload.sort((a, b) => b.bil_subjek - a.bil_subjek);
+            LecturerService.getCurrentWorkload().sort((a, b) => b.bil_subjek - a.bil_subjek);
         }
 
-        function sortBySection() {
-            $localStorage.workload.sort((a, b) => b.bil_seksyen - a.bil_seksyen);
+        function sortByWeeklyClasses() {
+            LecturerService.getCurrentWorkload().sort((a, b) => b.weekly_class - a.weekly_class);
         }
 
         function sortByStudent() {
-            $localStorage.workload.sort((a, b) => b.bil_pelajar - a.bil_pelajar);
+            LecturerService.getCurrentWorkload().sort((a, b) => b.bil_pelajar - a.bil_pelajar);
         }
 
         function sortByOverallWorkload() {
-            $localStorage.workload.sort((a, b) => b.overall_workload - a.overall_workload);
+            LecturerService.getCurrentWorkload().sort((a, b) => b.overall_workload - a.overall_workload);
         }
     }
 })();

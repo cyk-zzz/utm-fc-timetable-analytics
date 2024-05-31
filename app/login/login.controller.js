@@ -26,12 +26,19 @@
 
             function loginSuccess(message) {
                 $log.debug(message);
-                SessionService.getSessions().then(getLecturers);
+
+                SessionService.fetchSessions()
+                    .then(LecturerService.fetchLecturersAllSessions).catch($log.debug)
+                    .then(LecturerService.fetchLecturerSubjects).catch($log.debug)
+                    .then(LecturerService.fetchLecturerClasses).catch($log.debug)
+                    .then(LecturerService.calculateWorkload);
+
+                // SessionService.getSessions().then(getLecturers);
                 $state.go("dashboard");
             }
 
             function getLecturers(res) {
-                LecturerService.getLecturers()
+                LecturerService.fetchLecturersSession()
                     .then($log.debug, logout)
                     .catch(logout);
             }
@@ -42,7 +49,7 @@
         }
 
         function logout(message) {
-            $log.debug(message);
+            if (message) $log.debug(message);
             AuthService.logout().then((message) => {
                 $log.debug(message);
                 $state.go("login");

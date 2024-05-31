@@ -6,31 +6,29 @@
         .module('app')
         .factory('SessionService', SessionService)
 
-    SessionService.$inject = ['API', '$q', '$http', '$log', '$localStorage', '$state'];
+    SessionService.$inject = ['$q', '$log', '$localStorage', 'TTMS'];
 
-    function SessionService(API, $q, $http, $log, $localStorage, $state) {
+    function SessionService($q, $log, $localStorage, TTMS) {
 
         var service = {
+            fetchSessions: fetchSessions,
             getSessions: getSessions,
+            getSelectedSession: getSelectedSession,
             clearSessions: deleteSessions,
             selectSession: selectSession,
         };
 
         return service;
 
-        function getSessions() {
+        function fetchSessions() {
 
             var deferred = $q.defer();
 
             if ($localStorage.sessions) {
-                $log.debug("Session Semester Exists")
-                return 0;
+                deferred.resolve("Session Semester Exists");
             }
 
-            const url = `${API.URL}entity=sesisemester`;
-            $log.debug("Fetching Session Semester: " + url);
-
-            return $http.get(url)
+            return TTMS.sesisemester()
                 .then(getSessionsComplete)
                 .catch(getSessionsFailed);
 
@@ -55,6 +53,14 @@
                 deferred.reject(error);
                 return deferred.promise;
             }
+        }
+
+        function getSessions() {
+            return $localStorage.sessions;
+        }
+
+        function getSelectedSession() {
+            return $localStorage.selectedSession;
         }
 
         function deleteSessions() {

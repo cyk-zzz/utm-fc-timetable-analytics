@@ -5,9 +5,9 @@
         .module('app')
         .controller('SessionController', SessionController)
 
-    SessionController.$inject = ['$log', '$localStorage', '$state', 'AuthService', 'SessionService', 'LecturerService'];
+    SessionController.$inject = ['$log', '$state', 'AuthService', 'SessionService', 'LecturerService'];
 
-    function SessionController($log, $localStorage, $state, AuthService, SessionService, LecturerService) {
+    function SessionController($log, $state, AuthService, SessionService, LecturerService) {
         var vm = this;
 
         // vm.storage = $localStorage;
@@ -18,18 +18,21 @@
         function selectedSession(value) {
             if (angular.isDefined(value)) {
                 SessionService.selectSession(value);
-                getLecturers();
+                LecturerService.fetchLecturersSession()
+                    .then(LecturerService.fetchLecturerSubjects)
+                    .then(LecturerService.fetchLecturerClasses)
+                    .then(LecturerService.calculateWorkload);
             } else {
-                return $localStorage.selectedSession;
+                return SessionService.getSelectedSession();
             }
         }
 
         function getSessions() {
-            return $localStorage.sessions;
+            return SessionService.getSessions();
         }
 
         function getSelectedSession() {
-            return $localStorage.selectedSession;
+            return SessionService.getSelectedSession();
         }
 
         function getLecturers(res) {

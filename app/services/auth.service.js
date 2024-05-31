@@ -5,9 +5,9 @@
         .module('app')
         .factory('AuthService', AuthService)
 
-    AuthService.$inject = ['API', '$q', '$http', '$log', '$localStorage'];
+    AuthService.$inject = ['$q', '$log', '$localStorage', 'TTMS'];
 
-    function AuthService(API, $q, $http, $log, $localStorage) {
+    function AuthService($q, $log, $localStorage, TTMS) {
 
         var service = {
             login: login,
@@ -19,8 +19,7 @@
         function login(username, password) {
             var deferred = $q.defer();
 
-            const url = `${API.URL}entity=authentication&login=${username}&password=${password}`;
-            return $http.get(url)
+            return TTMS.login(username, password)
                 .then(checkLogin)
                 .catch(loginFail);
 
@@ -40,9 +39,7 @@
             }
 
             function loginAdmin(sessionID) {
-                const url = `${API.URL_ADMIN}session_id=${sessionID}`;
-                $log.debug(url);
-                return $http.get(url)
+                return TTMS.login_admin(sessionID)
                     .then(checkLoginAdmin)
                     .catch(loginFail);
 
@@ -57,8 +54,6 @@
                     }
                     return deferred.promise;
                 }
-
-
             }
 
             function loginFail(error) {
