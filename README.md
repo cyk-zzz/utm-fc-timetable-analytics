@@ -14,6 +14,8 @@
 - angular-translate v2.19.1
 - ngstorage v0.3.11
 - angular-ui-router v1.1.0
+- angular-chart.js v1.1.1
+- Chart.js v2.9.4
 
 # Design
 - Fonts - Montserrat
