@@ -3,45 +3,72 @@
 
     angular.module("app").factory("LecturerService", LecturerService);
 
-    LecturerService.$inject = ["$q", "$log", "$localStorage", "TTMS"];
+    LecturerService.$inject = ['$q', '$log', '$localStorage', '$timeout', 'TTMS'];
 
-    function LecturerService($q, $log, $localStorage, TTMS) {
+    function LecturerService($q, $log, $localStorage, $timeout, TTMS) {
         var service = {
 
             fetchLecturersSession: fetchLecturersSession,
             fetchLecturersAllSessions: fetchLecturersAllSessions,
             fetchLecturerSubjects: fetchLecturerSubjects,
+            fetchLecturerSubjectsAllSessions: fetchLecturerSubjectsAllSessions,
             fetchLecturerClasses: fetchLecturerClasses,
+            fetchLecturerClassesAllSessions: fetchLecturerClassesAllSessions,
 
             calculateWorkload: calculateWorkload,
 
             getWorkloadMap: getWorkloadMap,
             getCurrentWorkload: getCurrentWorkload,
 
+            getWorkloadSummary: getWorkloadSummary
         };
 
         return service;
 
-        function fetchLecturersAllSessions() {
-            var promises = [];
+        function fetchLecturersAllSessions(last = 5) {
+
             var deferred = $q.defer();
 
             const sessions = $localStorage.sessions;
-            const size = sessions.length;
-            for (let i = 0; i < size; i++) {
-                promises.push(fetchLecturersSession(sessions[i].sesi_semester_id));
+
+            // Fetch All Parallel
+            // var promises = [];
+            // const size = sessions.length;
+            // // for (let i = 0; i < size; i++) {
+            // //     promises.push(fetchLecturersSession(sessions[i].sesi_semester_id));
+            // // }
+
+            // // $q.all(promises).then(() => {
+            // //     $log.debug(`Fetched All Lecturers in All Sessions`);
+            // //     deferred.resolve();
+            // // });
+
+            // Fetch Chaining
+
+            sessions
+                .slice(0, 5)
+                .reduce((current, next) => {
+                    return current
+                        .then(() => fetchLecturersSession(next.sesi_semester_id));
+                }, $q.all())
+                .then(fetchAllSuccess);
+
+            function fetchAllSuccess() {
+                $log.debug(`Fetched Lecturers in All Sessions (Last ${last})`);
+                deferred.resolve();
             }
 
-            $q.all(promises).then(() => {
-                $log.debug(`Fetched All Lecturers in All Sessions`);
-                deferred.resolve();
-            });
+            function fetchAllFailed() {
+                $log.debug(`Fetched Lecturers Fail`);
+                deferred.reject();
+            }
 
             return deferred.promise;
         }
 
         function fetchLecturersSession(
-            selectedSession = $localStorage.selectedSession
+            selectedSession = $localStorage.selectedSession,
+            update = false,
         ) {
             var deferred = $q.defer();
 
@@ -54,16 +81,17 @@
             const session = `${selectedSession.slice(0, 4)}/${selectedSession.slice(4, 8)}`;
             const semester = selectedSession.slice(8, 9);
 
-            if (new Map($localStorage.workloadMap).get(selectedSession)) {
+            if (new Map($localStorage.workloadMap).get(selectedSession) && update == false) {
                 $log.debug(`Lecturers Data (${session}-${semester}) in Cache`);
                 deferred.resolve();
                 return deferred.promise;
             }
 
+            $log.debug(`Fetching Lecturers (${session}-${semester}) ......`);
+
             return TTMS
                 .pensyarah($localStorage.sessionID, session, semester)
-                .then(getLecturersComplete)
-                .catch(getLecturersFailed);
+                .then(getLecturersComplete, getLecturersFailed)
 
             function getLecturersComplete(response) {
                 const size = Object.keys(response.data).length;
@@ -71,12 +99,20 @@
                     $log.error(`Fetch Lecturers (${session}-${semester}) Failed`);
                     deferred.reject();
                 } else {
-                    // calculateDurationOfClasses(response.data, selectedSession);
-                    // calculateWorkload(response.data, selectedSession);
-                    let workloadMap = !$localStorage.workloadMap
-                        ? new Map()
-                        : new Map($localStorage.workloadMap);
-                    workloadMap.set(selectedSession, response.data);
+                    let workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
+                    let lecturers = response.data;
+
+                    var obj = {
+                        loading: false,
+                        workloadSummary: {
+                            high: 0,
+                            medium: 0,
+                            low: 0,
+                        },
+                        data: lecturers,
+                    }
+
+                    workloadMap.set(selectedSession, obj);
                     $localStorage.workloadMap = [...workloadMap];
                     $log.debug(`Fetched Lecturers (${session}-${semester}): ${response.data.length}`);
                     deferred.resolve();
@@ -84,13 +120,17 @@
                 return deferred.promise;
             }
 
-            function getLecturersFailed(error) {
-                deferred.reject(error);
+            function getLecturersFailed() {
+                $log.error(`Fetch Lecturers (${session}-${semester}) Failed`);
+                deferred.reject();
                 return deferred.promise;
             }
         }
 
-        function fetchLecturerSubjects(selectedSession = $localStorage.selectedSession) {
+        function fetchLecturerSubjects(
+            selectedSession = $localStorage.selectedSession,
+            update = false,
+        ) {
             var deferred = $q.defer();
 
             if (!selectedSession) {
@@ -101,25 +141,30 @@
 
             var promises = [];
             var workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
-            var lecturers = workloadMap.get(selectedSession);
+            // var lecturers = workloadMap.get(selectedSession);
+
+            var data = workloadMap.get(selectedSession);
+            var lecturers = data.data;
 
             const session = `${selectedSession.slice(0, 4)}/${selectedSession.slice(4, 8)}`;
             const semester = selectedSession.slice(8, 9);
 
             const lecturerCount = lecturers.length;
 
-            if (new Map($localStorage.workloadMap).get(selectedSession)) {
-                if (lecturers.some(l => l.hasOwnProperty('subjects')) == true) {
-                    $log.debug(`All Subjects Of Lecturers (${session}-${semester}) in Cache`);
-                    deferred.resolve();
-                    return deferred.promise;
-                }
+            if (lecturers.some(x => x.hasOwnProperty('subjects')) == true && update == false) {
+                $log.debug(`All Subjects Of Lecturers (${session}-${semester}) in Cache`);
+                deferred.resolve();
+                return deferred.promise;
             }
+
+            $log.debug(`Fetching Subjects (${session}-${semester}) ......`);
+            data.loading = true;
 
             for (let i = 0; i < lecturerCount; i++) {
                 const id = lecturers[i].no_pekerja;
 
-                var promise = TTMS.pensyarah_subjek(id).then(getLecturerSubjectsComplete);
+                var promise = TTMS.pensyarah_subjek(id)
+                    .then(getLecturerSubjectsComplete);
 
                 promises.push(promise);
 
@@ -139,7 +184,8 @@
             }
 
             $q.all(promises).then(() => {
-                workloadMap.set(selectedSession, lecturers);
+                data.loading = false;
+                workloadMap.set(selectedSession, data);
                 $localStorage.workloadMap = [...workloadMap];
                 $log.debug(`Fetched All Subjects Of Lecturers (${session}-${semester})`);
                 deferred.resolve();
@@ -148,7 +194,30 @@
             return deferred.promise;
         }
 
-        function fetchLecturerClasses(selectedSession = $localStorage.selectedSession) {
+        function fetchLecturerSubjectsAllSessions(last = 5) {
+
+            var deferred = $q.defer();
+
+            const sessions = $localStorage.sessions;
+
+            sessions
+                .slice(0, last)
+                .reduce((current, next) => {
+                    return current.then(() => {
+                        return fetchLecturerSubjects(next.sesi_semester_id);
+                    });
+                }, $q.all()).then(() => {
+                    $log.debug(`Fetched All Subjects in All Sessions (Last ${last})`);
+                    deferred.resolve();
+                });
+
+            return deferred.promise;
+        }
+
+        function fetchLecturerClasses(
+            selectedSession = $localStorage.selectedSession,
+            update = false,
+        ) {
             var deferred = $q.defer();
 
             if (!selectedSession) {
@@ -159,20 +228,24 @@
 
             var promises = [];
             var workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
-            var lecturers = workloadMap.get(selectedSession);
+            // var lecturers = workloadMap.get(selectedSession);
+
+            var data = workloadMap.get(selectedSession);
+            var lecturers = data.data;
 
             const session = `${selectedSession.slice(0, 4)}/${selectedSession.slice(4, 8)}`;
             const semester = selectedSession.slice(8, 9);
 
             const lecturerCount = lecturers.length;
 
-            if (new Map($localStorage.workloadMap).get(selectedSession)) {
-                if (lecturers.some(l => l.hasOwnProperty('classes')) == true) {
-                    $log.debug(`All Classes Of Lecturers (${session}-${semester}) in Cache`);
-                    deferred.resolve();
-                    return deferred.promise;
-                }
+            if (lecturers.some(x => x.hasOwnProperty('classes')) == true && update == false) {
+                $log.debug(`All Classes Of Lecturers (${session}-${semester}) in Cache`);
+                deferred.resolve();
+                return deferred.promise;
             }
+
+            $log.debug(`Fetching Classes (${session}-${semester}) ......`);
+            data.loading = true;
 
             for (let i = 0; i < lecturerCount; i++) {
                 const subjectCount = lecturers[i].subjects.length;
@@ -182,9 +255,15 @@
                     const subjectCode = lecturers[i].subjects[j].kod_subjek;
                     const section = lecturers[i].subjects[j].seksyen;
 
-                    var promise = TTMS.jadual_subjek(session, semester, subjectCode, section).then(getLecturerClassesComplete);
+                    var promise = TTMS.jadual_subjek(session, semester, subjectCode, section)
+                        .then(getLecturerClassesComplete)
+                        .catch(getLecturerClassesFailed)
 
                     promises.push(promise);
+
+                    function getLecturerClassesFailed(response) {
+                        $log.debug(response.data)
+                    }
 
                     function getLecturerClassesComplete(response) {
                         var subjectTimetable = response.data.map((obj) => ({
@@ -211,7 +290,8 @@
             }
 
             $q.all(promises).then(() => {
-                workloadMap.set(selectedSession, lecturers);
+                data.loading = false;
+                workloadMap.set(selectedSession, data);
                 $localStorage.workloadMap = [...workloadMap];
                 $log.debug(`Fetched All Classes Of Lecturers (${session}-${semester})`);
                 deferred.resolve();
@@ -220,11 +300,31 @@
             return deferred.promise;
         }
 
-        function calculateWorkload(selectedSession = $localStorage.selectedSession) {
-            var promises = [];
-            var workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
-            var lecturers = workloadMap.get(selectedSession);
+        function fetchLecturerClassesAllSessions(last = 5) {
 
+            var deferred = $q.defer();
+
+            const sessions = $localStorage.sessions;
+
+            sessions
+                .slice(0, last)
+                .reduce((current, next) => {
+                    return current.then(() => {
+                        return fetchLecturerClasses(next.sesi_semester_id);
+                    });
+                }, $q.all()).then(() => {
+                    $log.debug(`Fetched All Classes in All Sessions (Last ${last})`);
+                    deferred.resolve();
+                });
+            return deferred.promise;
+        }
+
+        function calculateWorkload(selectedSession = $localStorage.selectedSession) {
+            var workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
+
+            var data = workloadMap.get(selectedSession);
+            var lecturers = data.data;
+            var workloadSummary = [0,0,0];
             let size = lecturers.length;
 
             const maxStudents = lecturers.reduce((a, b) => a.bil_pelajar > b.bil_pelajar ? a : b).bil_pelajar;
@@ -276,10 +376,22 @@
                     maxNormalized,
                     minNormalized
                 );
+
+                if (lecturers[i].overall_workload <= 0.333) {
+                    workloadSummary[2]++;
+                }
+                else if (lecturers[i].overall_workload <= 0.666) {
+                    workloadSummary[1]++;
+                }
+                else {
+                    workloadSummary[0]++;
+                }
             }
 
-            workloadMap.set(selectedSession, lecturers);
+            data.loading = false;
+            workloadMap.set(selectedSession, data);
             $localStorage.workloadMap = [...workloadMap];
+            $localStorage.workloadSummary = workloadSummary;
         }
 
         function normalize(val, max, min) {
@@ -292,9 +404,11 @@
         }
 
         function getCurrentWorkload() {
-            return new Map($localStorage.workloadMap).get(
-                $localStorage.selectedSession
-            );
+            return new Map($localStorage.workloadMap).get($localStorage.selectedSession);
+        }
+
+        function getWorkloadSummary(){
+            return $localStorage.workloadSummary;
         }
     }
 })();

@@ -20,8 +20,7 @@
             var deferred = $q.defer();
 
             return TTMS.login(username, password)
-                .then(checkLogin)
-                .catch(loginFail);
+                .then(checkLogin, loginFail);
 
             function checkLogin(response) {
                 if (!Object.keys(response.data).length) {
@@ -40,17 +39,18 @@
 
             function loginAdmin(sessionID) {
                 return TTMS.login_admin(sessionID)
-                    .then(checkLoginAdmin)
-                    .catch(loginFail);
+                    .then(checkLoginAdmin, loginFail);
 
                 function checkLoginAdmin(response) {
                     if (!Object.keys(response.data).length) {
-                        deferred.reject("Login Admin Failed");
+                        $log.debug("Login Admin Failed");
+                        deferred.reject();
                     }
                     else {
                         const data = response.data[0];
                         $localStorage.sessionID = data.session_id;
-                        deferred.resolve("Login Admin Successful");
+                        $log.debug("Login Admin Successful");
+                        deferred.resolve();
                     }
                     return deferred.promise;
                 }
@@ -63,14 +63,17 @@
         }
 
         function logout() {
+            var deferred = $q.defer();
+
             // delete $localStorage.username;
             // delete $localStorage.fullname;
             // delete $localStorage.usertype;
             // delete $localStorage.sessionID;
 
             $localStorage.$reset();
-
-            return $q.resolve("Log Out Successfully");
+            $log.debug("Log Out Successfully");
+            deferred.resolve();
+            return deferred.promise;
         }
     }
 
