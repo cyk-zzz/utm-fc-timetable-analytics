@@ -20,40 +20,27 @@
         function login() {
             vm.loading = true;
             AuthService.login(vm.username, vm.password)
-                .then(loginSuccess, loginFail)
-                .catch(loginFail)
+                .then(loginSuccess)
                 .finally(() => vm.loading = false)
 
-            function loginSuccess(message) {
-                $log.debug(message);
-
+            function loginSuccess() {
                 SessionService.fetchSessions()
-                    .then(LecturerService.fetchLecturersAllSessions).catch($log.debug)
-                    .then(LecturerService.fetchLecturerSubjects).catch($log.debug)
-                    .then(LecturerService.fetchLecturerClasses).catch($log.debug)
-                    .then(LecturerService.calculateWorkload);
+                    .then(() => LecturerService.fetchLecturersAllSessions(), logout)
+                    .then(() => LecturerService.fetchLecturerSubjectsAllSessions(), logout)
+                    .then(() => LecturerService.fetchLecturerClassesAllSessions(), logout)
+                    // .then(LecturerService.fetchLecturerSubjectsAllSessions)
+                    // .then(LecturerService.fetchLecturerClassesAllSessions)
+                    .then(() => LecturerService.calculateWorkload(), logout)
+                    ;
 
-                // SessionService.getSessions().then(getLecturers);
                 $state.go("dashboard");
-            }
-
-            function getLecturers(res) {
-                LecturerService.fetchLecturersSession()
-                    .then($log.debug, logout)
-                    .catch(logout);
-            }
-
-            function loginFail(message) {
-                $log.debug(message);
             }
         }
 
-        function logout(message) {
-            if (message) $log.debug(message);
-            AuthService.logout().then((message) => {
-                $log.debug(message);
-                $state.go("login");
-            });
+        function logout() {
+            AuthService.logout().then(() =>
+                $state.go("login")
+            );
         }
     }
 })();
