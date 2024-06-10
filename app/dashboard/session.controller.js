@@ -10,7 +10,6 @@
     function SessionController($log, $state, AuthService, SessionService, LecturerService) {
         var vm = this;
 
-        // vm.storage = $localStorage;
         vm.getSessions = getSessions;
         vm.getSelectedSession = getSelectedSession;
         vm.selectedSession = selectedSession;
@@ -18,10 +17,10 @@
         function selectedSession(value) {
             if (angular.isDefined(value)) {
                 SessionService.selectSession(value);
-                LecturerService.fetchLecturersSession()
-                    .then(LecturerService.fetchLecturerSubjects)
-                    .then(LecturerService.fetchLecturerClasses)
-                    .then(LecturerService.calculateWorkload);
+                LecturerService.fetchLecturersSession(value)
+                    .then(() => LecturerService.fetchLecturerSubjects(value), logout)
+                    .then(() => LecturerService.fetchLecturerClasses(value), logout)
+                    .then(() => LecturerService.calculateWorkload(value), logout);
             } else {
                 return SessionService.getSelectedSession();
             }
@@ -35,19 +34,10 @@
             return SessionService.getSelectedSession();
         }
 
-        function getLecturers(res) {
-            LecturerService.getLecturers()
-                .then($log.debug, logout)
-                .catch(logout);
-        }
-
         function logout() {
-            AuthService.logout().then(goToLogoutPage);
-        }
-
-        function goToLogoutPage(message) {
-            $log.debug(message);
-            $state.go("login");
+            AuthService.logout().then(() =>
+                $state.go("login")
+            );
         }
     }
 })();
