@@ -1,11 +1,16 @@
-<aside class="menu">
+<aside class="menu" ng-controller="SideNavController as sidenav">
     <!-- <p class="menu-label">General</p> -->
     <ul class="menu-list">
-        <li><a class="has-text-centered" ui-sref="dashboard" ui-sref-active="is-active">Dashboard</a></li>
         <li><a class="has-text-centered" ui-sref="workload" ui-sref-active="is-active">Workload</a></li>
 
         <li><a class="has-text-centered" ui-sref="profile" ui-sref-active="is-active">Profile</a></li>
-        <li><a class="has-text-centered" ui-sref="login" ui-sref-active="is-active">Log Out</a></li>
+        <li><a ng-click="sidenav.logout()" class="has-text-centered" ui-sref-active="is-active">
+                Log Out
+            </a></li>
+
+        <li><a ng-click="sidenav.logout(true)" class="has-text-centered" ui-sref-active="is-active">
+                Reset and Log Out
+            </a></li>
     </ul>
 
     <!-- <p class="menu-label">Administration</p>

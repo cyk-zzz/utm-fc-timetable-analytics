@@ -3,33 +3,28 @@
 
     angular.module("app").factory("LecturerService", LecturerService);
 
-    LecturerService.$inject = ['$q', '$log', '$localStorage', '$timeout', 'TTMS'];
+    LecturerService.$inject = ['$q', '$log', '$localStorage', 'TTMS', 'WorkloadService', 'SessionService'];
 
-    function LecturerService($q, $log, $localStorage, $timeout, TTMS) {
+    function LecturerService($q, $log, $localStorage, TTMS, WorkloadService, SessionService) {
         var service = {
 
-            fetchLecturersSession: fetchLecturersSession,
-            fetchLecturersAllSessions: fetchLecturersAllSessions,
-            fetchLecturerSubjects: fetchLecturerSubjects,
-            fetchLecturerSubjectsAllSessions: fetchLecturerSubjectsAllSessions,
-            fetchLecturerClasses: fetchLecturerClasses,
-            fetchLecturerClassesAllSessions: fetchLecturerClassesAllSessions,
+            fetchAll: fetchAll,
 
-            calculateWorkload: calculateWorkload,
+            fetchSession: fetchSession,
+            fetchSubjects: fetchSubjects,
+            fetchClasses: fetchClasses,
 
-            getWorkloadMap: getWorkloadMap,
-            getCurrentWorkload: getCurrentWorkload,
-
-            getWorkloadSummary: getWorkloadSummary
+            getAll: getAll,
+            getSelected: getSelected,
+            select: select,
         };
 
         return service;
 
-        function fetchLecturersAllSessions(last = 5) {
-
+        function fetchAll(lastSession = 10) {
             var deferred = $q.defer();
 
-            const sessions = $localStorage.sessions;
+            const session = $localStorage.sessions
 
             // Fetch All Parallel
             // var promises = [];
@@ -43,30 +38,35 @@
             // //     deferred.resolve();
             // // });
 
-            // Fetch Chaining
 
-            sessions
-                .slice(0, 5)
+
+            // Fetch Chaining
+            // sessions
+            //     .slice(0, lastSession)
+            SessionService.getAll(lastSession)
                 .reduce((current, next) => {
                     return current
-                        .then(() => fetchLecturersSession(next.sesi_semester_id));
+                        .then(() => fetchSession(next.sesi_semester_id)
+                            .then(() => fetchSubjects(next.sesi_semester_id))
+                            .then(() => fetchClasses(next.sesi_semester_id))
+                        );
                 }, $q.all())
-                .then(fetchAllSuccess);
+                .then(fetchAllSuccess, fetchAllFailed);
 
             function fetchAllSuccess() {
-                $log.debug(`Fetched Lecturers in All Sessions (Last ${last})`);
+                $log.debug(`Fetched All Workload in All Sessions (Last ${lastSession})`);
                 deferred.resolve();
             }
 
             function fetchAllFailed() {
-                $log.debug(`Fetched Lecturers Fail`);
+                $log.debug(`Fetched Workload Fail`);
                 deferred.reject();
             }
 
             return deferred.promise;
         }
 
-        function fetchLecturersSession(
+        function fetchSession(
             selectedSession = $localStorage.selectedSession,
             update = false,
         ) {
@@ -102,18 +102,19 @@
                     let workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
                     let lecturers = response.data;
 
+                    let lecturerMap = !$localStorage.lecturerMap ? new Map() : new Map($localStorage.lecturerMap);
+                    lecturers.forEach((lecturer) => {
+                        lecturerMap.set(lecturer.no_pekerja, lecturer.nama);
+                    })
+
                     var obj = {
                         loading: false,
-                        workloadSummary: {
-                            high: 0,
-                            medium: 0,
-                            low: 0,
-                        },
                         data: lecturers,
                     }
 
                     workloadMap.set(selectedSession, obj);
                     $localStorage.workloadMap = [...workloadMap];
+                    $localStorage.lecturerMap = [...lecturerMap];
                     $log.debug(`Fetched Lecturers (${session}-${semester}): ${response.data.length}`);
                     deferred.resolve();
                 }
@@ -127,7 +128,7 @@
             }
         }
 
-        function fetchLecturerSubjects(
+        function fetchSubjects(
             selectedSession = $localStorage.selectedSession,
             update = false,
         ) {
@@ -141,7 +142,6 @@
 
             var promises = [];
             var workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
-            // var lecturers = workloadMap.get(selectedSession);
 
             var data = workloadMap.get(selectedSession);
             var lecturers = data.data;
@@ -152,7 +152,7 @@
             const lecturerCount = lecturers.length;
 
             if (lecturers.some(x => x.hasOwnProperty('subjects')) == true && update == false) {
-                $log.debug(`All Subjects Of Lecturers (${session}-${semester}) in Cache`);
+                $log.debug(`Subjects Of Lecturers (${session}-${semester}) in Cache`);
                 deferred.resolve();
                 return deferred.promise;
             }
@@ -187,34 +187,14 @@
                 data.loading = false;
                 workloadMap.set(selectedSession, data);
                 $localStorage.workloadMap = [...workloadMap];
-                $log.debug(`Fetched All Subjects Of Lecturers (${session}-${semester})`);
+                $log.debug(`Fetched Subjects Of Lecturers (${session}-${semester})`);
                 deferred.resolve();
             });
 
             return deferred.promise;
         }
 
-        function fetchLecturerSubjectsAllSessions(last = 5) {
-
-            var deferred = $q.defer();
-
-            const sessions = $localStorage.sessions;
-
-            sessions
-                .slice(0, last)
-                .reduce((current, next) => {
-                    return current.then(() => {
-                        return fetchLecturerSubjects(next.sesi_semester_id);
-                    });
-                }, $q.all()).then(() => {
-                    $log.debug(`Fetched All Subjects in All Sessions (Last ${last})`);
-                    deferred.resolve();
-                });
-
-            return deferred.promise;
-        }
-
-        function fetchLecturerClasses(
+        function fetchClasses(
             selectedSession = $localStorage.selectedSession,
             update = false,
         ) {
@@ -239,8 +219,9 @@
             const lecturerCount = lecturers.length;
 
             if (lecturers.some(x => x.hasOwnProperty('classes')) == true && update == false) {
-                $log.debug(`All Classes Of Lecturers (${session}-${semester}) in Cache`);
+                $log.debug(`Classes Of Lecturers (${session}-${semester}) in Cache`);
                 deferred.resolve();
+                WorkloadService.calculate(selectedSession);
                 return deferred.promise;
             }
 
@@ -293,122 +274,27 @@
                 data.loading = false;
                 workloadMap.set(selectedSession, data);
                 $localStorage.workloadMap = [...workloadMap];
-                $log.debug(`Fetched All Classes Of Lecturers (${session}-${semester})`);
+                $log.debug(`Fetched Classes Of Lecturers (${session}-${semester})`);
+
+                WorkloadService.calculate(selectedSession);
                 deferred.resolve();
             });
 
             return deferred.promise;
         }
 
-        function fetchLecturerClassesAllSessions(last = 5) {
-
-            var deferred = $q.defer();
-
-            const sessions = $localStorage.sessions;
-
-            sessions
-                .slice(0, last)
-                .reduce((current, next) => {
-                    return current.then(() => {
-                        return fetchLecturerClasses(next.sesi_semester_id);
-                    });
-                }, $q.all()).then(() => {
-                    $log.debug(`Fetched All Classes in All Sessions (Last ${last})`);
-                    deferred.resolve();
-                });
-            return deferred.promise;
+        function getAll() {
+            let map = new Map($localStorage.lecturerMap);
+            let array = Array.from(map, ([id, name]) => ({ id, name }));
+            return array;
         }
 
-        function calculateWorkload(selectedSession = $localStorage.selectedSession) {
-            var workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
-
-            var data = workloadMap.get(selectedSession);
-            var lecturers = data.data;
-            var workloadSummary = [0,0,0];
-            let size = lecturers.length;
-
-            const maxStudents = lecturers.reduce((a, b) => a.bil_pelajar > b.bil_pelajar ? a : b).bil_pelajar;
-            const minStudents = 0;
-
-            const maxSubjects = lecturers.reduce((a, b) => a.bil_subjek > b.bil_subjek ? a : b).bil_subjek;
-            const minSubjects = 0;
-
-            for (var i = 0; i < size; i++) {
-                lecturers[i].weekly_class = lecturers[i].classes.length;
-            }
-
-            const maxWeeklyClass = lecturers.reduce((a, b) => a.weekly_class > b.weekly_class ? a : b).weekly_class;
-            const minWeeklyClass = 0;
-
-            // const maxSections = lecturers.reduce((a, b) =>a.bil_seksyen > b.bil_seksyen ? a : b).bil_seksyen;
-            // const minSections = lecturers.reduce((a, b) => a.bil_seksyen < b.bil_seksyen ? a : b).bil_seksyen;
-            // const minSections = 0;
-
-            for (var i = 0; i < size; i++) {
-                lecturers[i].bil_pelajar_norm = normalize(
-                    lecturers[i].bil_pelajar,
-                    maxStudents,
-                    minStudents
-                );
-                lecturers[i].bil_subjek_norm = normalize(
-                    lecturers[i].bil_subjek,
-                    maxSubjects,
-                    minSubjects
-                );
-                lecturers[i].weekly_class_norm = normalize(
-                    lecturers[i].weekly_class,
-                    maxWeeklyClass,
-                    minWeeklyClass
-                );
-
-                lecturers[i].sum_normalized =
-                    lecturers[i].bil_pelajar_norm +
-                    lecturers[i].bil_subjek_norm +
-                    lecturers[i].weekly_class_norm;
-            }
-
-            const maxNormalized = lecturers.reduce((a, b) => a.sum_normalized > b.sum_normalized ? a : b).sum_normalized;
-            const minNormalized = 0;
-
-            for (var i = 0; i < size; i++) {
-                lecturers[i].overall_workload = normalize(
-                    lecturers[i].sum_normalized,
-                    maxNormalized,
-                    minNormalized
-                );
-
-                if (lecturers[i].overall_workload <= 0.333) {
-                    workloadSummary[2]++;
-                }
-                else if (lecturers[i].overall_workload <= 0.666) {
-                    workloadSummary[1]++;
-                }
-                else {
-                    workloadSummary[0]++;
-                }
-            }
-
-            data.loading = false;
-            workloadMap.set(selectedSession, data);
-            $localStorage.workloadMap = [...workloadMap];
-            $localStorage.workloadSummary = workloadSummary;
+        function getSelected() {
+            return $localStorage.selectedLecturer;
         }
 
-        function normalize(val, max, min) {
-            if (max - val === 0) return 1;
-            return (val - min) / max;
-        }
-
-        function getWorkloadMap() {
-            return new Map($localStorage.workloadMap);
-        }
-
-        function getCurrentWorkload() {
-            return new Map($localStorage.workloadMap).get($localStorage.selectedSession);
-        }
-
-        function getWorkloadSummary(){
-            return $localStorage.workloadSummary;
+        function select(id) {
+            $localStorage.selectedLecturer = id;
         }
     }
 })();

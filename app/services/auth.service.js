@@ -5,9 +5,9 @@
         .module('app')
         .factory('AuthService', AuthService)
 
-    AuthService.$inject = ['$q', '$log', '$localStorage', 'TTMS'];
+    AuthService.$inject = ['$q', '$log', '$state', '$localStorage', 'TTMS'];
 
-    function AuthService($q, $log, $localStorage, TTMS) {
+    function AuthService($q, $log, $state, $localStorage, TTMS) {
 
         var service = {
             login: login,
@@ -18,13 +18,19 @@
 
         function login(username, password) {
             var deferred = $q.defer();
-
+            $log.debug("Logging in......");
             return TTMS.login(username, password)
-                .then(checkLogin, loginFail);
+                .then(checkLogin, loginFail)
 
             function checkLogin(response) {
                 if (!Object.keys(response.data).length) {
-                    deferred.reject("Login Failed");
+                    $log.debug("Login Fail");
+                    deferred.reject();
+                    return deferred.promise;
+                }
+                else if (response.data == null) {
+                    $log.debug("Login Fail");
+                    deferred.reject();
                     return deferred.promise;
                 }
                 else {
@@ -39,7 +45,7 @@
 
             function loginAdmin(sessionID) {
                 return TTMS.login_admin(sessionID)
-                    .then(checkLoginAdmin, loginFail);
+                    .then(checkLoginAdmin, loginFail)
 
                 function checkLoginAdmin(response) {
                     if (!Object.keys(response.data).length) {
@@ -57,21 +63,26 @@
             }
 
             function loginFail(error) {
-                deferred.reject(error);
+                $log.debug("Login Failed");
+                deferred.reject();
                 return deferred.promise;
             }
         }
 
-        function logout() {
+        function logout(reset = false) {
             var deferred = $q.defer();
 
-            // delete $localStorage.username;
-            // delete $localStorage.fullname;
-            // delete $localStorage.usertype;
-            // delete $localStorage.sessionID;
+            if (reset) {
+                $localStorage.$reset();
+            }
 
-            $localStorage.$reset();
+            delete $localStorage.username;
+            delete $localStorage.fullname;
+            delete $localStorage.usertype;
+            delete $localStorage.sessionID;
+
             $log.debug("Log Out Successfully");
+            $state.go("login");
             deferred.resolve();
             return deferred.promise;
         }

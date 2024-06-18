@@ -18,15 +18,15 @@
     }
 
 
-    var dashboard = {
-      name: 'dashboard',
-      url: '/dashboard',
-      templateUrl: 'dashboard/dashboard.html',
+    var workload = {
+      name: 'workload',
+      url: '/workload',
+      templateUrl: 'workload/workload.html',
       // controller: 'DashboardController as dashboard',
     }
 
     $stateProvider.state(login);
-    $stateProvider.state(dashboard);
+    $stateProvider.state(workload);
   }
 
 })();

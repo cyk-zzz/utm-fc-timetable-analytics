@@ -11,16 +11,16 @@
     function SessionService($q, $log, $localStorage, TTMS) {
 
         var service = {
-            fetchSessions: fetchSessions,
-            getSessions: getSessions,
-            getSelectedSession: getSelectedSession,
-            clearSessions: deleteSessions,
-            selectSession: selectSession,
+            fetchAll: fetchAll,
+            getAll: getAll,
+            getSelected: getSelected,
+            deleteAll: deleteAll,
+            select: select,
         };
 
         return service;
 
-        function fetchSessions() {
+        function fetchAll() {
 
             var deferred = $q.defer();
 
@@ -41,7 +41,7 @@
                     const sessionSemesterList = response.data;
                     sessionSemesterList.sort((a, b) => b.sesi_semester_id.localeCompare(a.sesi_semester_id));
                     $localStorage.sessions = sessionSemesterList;
-                    selectSession(sessionSemesterList[0].sesi_semester_id);
+                    select(sessionSemesterList[0].sesi_semester_id);
                     $log.debug("Fetched Session Semester: " + sessionSemesterList.length);
                     deferred.resolve("Fetched Session Semester");
                 }
@@ -55,20 +55,20 @@
             }
         }
 
-        function getSessions() {
-            return $localStorage.sessions;
+        function getAll(lastSession = -1) {
+            return $localStorage?.sessions?.slice(0, lastSession);
         }
 
-        function getSelectedSession() {
+        function getSelected() {
             return $localStorage.selectedSession;
         }
 
-        function deleteSessions() {
+        function deleteAll() {
             delete $localStorage.selectedSession;
             delete $localStorage.sessions;
         }
 
-        function selectSession(session) {
+        function select(session) {
             $localStorage.selectedSession = session;
         }
     }
