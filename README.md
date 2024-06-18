@@ -16,6 +16,7 @@
 - angular-ui-router v1.1.0
 - angular-chart.js v1.1.1
 - Chart.js v2.9.4
+- chartjs-plugin-datalabels V1.0.0
 
 # Design
 - Fonts - Montserrat
