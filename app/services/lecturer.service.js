@@ -3,12 +3,13 @@
 
     angular.module("app").factory("LecturerService", LecturerService);
 
-    LecturerService.$inject = ['$q', '$log', '$localStorage', 'TTMS', 'WorkloadService', 'SessionService'];
+    LecturerService.$inject = ['$q', '$log', '$localStorage', 'TTMS', 'WorkloadService', 'SessionService', 'StatusService', 'AuthService'];
 
-    function LecturerService($q, $log, $localStorage, TTMS, WorkloadService, SessionService) {
+    function LecturerService($q, $log, $localStorage, TTMS, WorkloadService, SessionService, StatusService, AuthService) {
         var service = {
 
             fetchAll: fetchAll,
+            update: update,
 
             fetchSession: fetchSession,
             fetchSubjects: fetchSubjects,
@@ -21,10 +22,8 @@
 
         return service;
 
-        function fetchAll(lastSession = 10) {
+        function fetchAll(update = false, lastSession = 10) {
             var deferred = $q.defer();
-
-            const session = $localStorage.sessions
 
             // Fetch All Parallel
             // var promises = [];
@@ -43,23 +42,56 @@
             // Fetch Chaining
             // sessions
             //     .slice(0, lastSession)
+
             SessionService.getAll(lastSession)
                 .reduce((current, next) => {
                     return current
-                        .then(() => fetchSession(next.sesi_semester_id)
-                            .then(() => fetchSubjects(next.sesi_semester_id))
-                            .then(() => fetchClasses(next.sesi_semester_id))
+                        .then(() => fetchSession(update, next.sesi_semester_id, AuthService.logout)
+                            .then(() => fetchSubjects(update, next.sesi_semester_id), AuthService.logout)
+                            .then(() => fetchClasses(update, next.sesi_semester_id), AuthService.logout)
                         );
                 }, $q.all())
                 .then(fetchAllSuccess, fetchAllFailed);
 
             function fetchAllSuccess() {
                 $log.debug(`Fetched All Workload in All Sessions (Last ${lastSession})`);
+                WorkloadService.calculateWorkloadByLecturer(lastSession);
+                StatusService.setStatus('Idle');
                 deferred.resolve();
             }
 
-            function fetchAllFailed() {
-                $log.debug(`Fetched Workload Fail`);
+            function fetchAllFailed(error) {
+                $log.debug(`Fetched Workload Fail ${error}`);
+                StatusService.setStatus('Idle');
+                deferred.reject();
+            }
+
+            return deferred.promise;
+        }
+
+        function update(update = true) {
+            var deferred = $q.defer();
+
+            StatusService.setLoading(true);
+
+            var currentSession = SessionService.getSelected();
+
+            fetchSession(update, currentSession.sesi_semester_id)
+                .then(() => fetchSubjects(update, currentSession.sesi_semester_id))
+                .then(() => fetchClasses(update, currentSession.sesi_semester_id))
+                .then(updateSuccess, updateFailed);
+
+            function updateSuccess() {
+                $log.debug(`Updated ${currentSession} Data`);
+                StatusService.setStatus('Idle');
+                StatusService.setLoading(false);
+                deferred.resolve();
+            }
+
+            function updateFailed() {
+                $log.debug(`Updated ${currentSession} Data Failed`);
+                StatusService.setStatus('Idle');
+                StatusService.setLoading(false);
                 deferred.reject();
             }
 
@@ -67,8 +99,8 @@
         }
 
         function fetchSession(
-            selectedSession = $localStorage.selectedSession,
             update = false,
+            selectedSession = $localStorage.selectedSession,
         ) {
             var deferred = $q.defer();
 
@@ -87,7 +119,7 @@
                 return deferred.promise;
             }
 
-            $log.debug(`Fetching Lecturers (${session}-${semester}) ......`);
+            StatusService.setStatus(`Fetching Lecturers (${session}-${semester}) ......  DO NOT REFRESH`);
 
             return TTMS
                 .pensyarah($localStorage.sessionID, session, semester)
@@ -129,8 +161,8 @@
         }
 
         function fetchSubjects(
-            selectedSession = $localStorage.selectedSession,
             update = false,
+            selectedSession = $localStorage.selectedSession,
         ) {
             var deferred = $q.defer();
 
@@ -157,7 +189,7 @@
                 return deferred.promise;
             }
 
-            $log.debug(`Fetching Subjects (${session}-${semester}) ......`);
+            StatusService.setStatus(`Fetching Subjects (${session}-${semester}) ...... DO NOT REFRESH`);
             data.loading = true;
 
             for (let i = 0; i < lecturerCount; i++) {
@@ -195,8 +227,8 @@
         }
 
         function fetchClasses(
-            selectedSession = $localStorage.selectedSession,
             update = false,
+            selectedSession = $localStorage.selectedSession,
         ) {
             var deferred = $q.defer();
 
@@ -225,7 +257,7 @@
                 return deferred.promise;
             }
 
-            $log.debug(`Fetching Classes (${session}-${semester}) ......`);
+            StatusService.setStatus(`Fetching Classes (${session}-${semester}) ......  DO NOT REFRESH`);
             data.loading = true;
 
             for (let i = 0; i < lecturerCount; i++) {
@@ -277,6 +309,8 @@
                 $log.debug(`Fetched Classes Of Lecturers (${session}-${semester})`);
 
                 WorkloadService.calculate(selectedSession);
+
+                StatusService.setStatus('Idle');
                 deferred.resolve();
             });
 
@@ -284,9 +318,7 @@
         }
 
         function getAll() {
-            let map = new Map($localStorage.lecturerMap);
-            let array = Array.from(map, ([id, name]) => ({ id, name }));
-            return array;
+            return new Map($localStorage.lecturerMap);
         }
 
         function getSelected() {
@@ -294,6 +326,9 @@
         }
 
         function select(id) {
+            var lecturerMap = new Map($localStorage.lecturerMap);
+            var lecturerName = lecturerMap.get(Number(id));
+            $log.debug(`Selected ${lecturerName}`);
             $localStorage.selectedLecturer = id;
         }
     }

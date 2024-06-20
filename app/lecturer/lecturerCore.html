@@ -1,0 +1,41 @@
+<ng-controller ng-controller="LecturerController as lecturer">
+
+    <!-- Lecturer Workload View Mode Selector -->
+
+    <!-- <div class="box">
+        <label class="label">Select Workload View Mode</label>
+        <div class="select">
+            <select ng-model="workload.viewMode">
+                <option value="columnChart"> Column Chart</option>
+                <option value="table"> Table</option>
+            </select>
+        </div>
+    </div> -->
+
+    <!-- Table -->
+
+    <div class="box">
+
+        <div class="table-container">
+            <table class="table is-striped is-bordered is-hoverable">
+                <thead>
+                    <tr>
+                        <th>Session</th>
+                        <th>Overall Workload</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="workload in lecturer.getWorkload()"">
+                        <td>{{ workload.session_id | SessionFilter }}</td>
+
+                        <td ng-class="lecturer.getColorByValue(workload.overall_workload)">
+                            {{ workload.overall_workload | number : 3 }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</ng-controller>

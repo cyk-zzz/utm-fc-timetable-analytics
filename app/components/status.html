@@ -1,0 +1,6 @@
+<ng-controller ng-controller="StatusController as status">
+    <div>
+        <label class="label">Background Status: {{status.get()}}</label>
+        <progress ng-hide="status.get() == 'Idle'" class="progress is-small is-success" max="100">20%</progress>
+    </div>
+</ng-controller>

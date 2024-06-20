@@ -11,6 +11,10 @@
 
             getWorkloadMap: getWorkloadMap,
             getWorkload: getWorkload,
+            calculateWorkloadByLecturer: calculateWorkloadByLecturer,
+
+            getWorkloadLecturer: getWorkloadLecturer,
+            getColorByValue: getColorByValue,
         };
 
         return service;
@@ -143,14 +147,60 @@
         function calculateWorkloadByLecturer(lastSession = -1) {
 
             var sessions = SessionService.getAll(lastSession);
-
             var lecturerMap = !$localStorage.lecturerMap ? new Map() : new Map($localStorage.lecturerMap);
+            var workloadLecturerMap = !$localStorage.workloadLecturerMap ? new Map() : new Map($localStorage.workloadLecturerMap);
+            var workloadSessionMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
 
-            var workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
+            lecturerMap.forEach((name, id) => {
+                let workloadArray = [];
 
-            var workloadByLecturerMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
+                // Create Empty Workload
+                // sessions.forEach((session) => {
+                //     let workload = {
+                //         session_id: `${session.sesi_semester_id}`,
+                //         overall_workload: 0
+                //     }
+                //     workloadArray.push(workload);
+                // })
 
-            $localStorage.workloadByLecturerMap = [...workloadByLecturerMap];
+                // $log.debug(workloadArray);
+
+                // Add Calculated Workload
+                workloadSessionMap.forEach((session, sessionId) => {
+                    let lecturers = session.data;
+
+                    lecturers.forEach((lecturer) => {
+
+                        if (lecturer.nama == name) {
+                            let obj = {
+                                session_id: sessionId,
+                                overall_workload: lecturer.overall_workload,
+                            }
+                            workloadArray.push(obj);
+                        }
+                    })
+                })
+
+                // Add Workload that is 0
+                let AllSessions = sessions.map((x) => { return x.sesi_semester_id });
+                let calculatedSessions = workloadArray.map((x) => { return x.session_id });
+                let notCalculatedSessions = AllSessions.filter(x => !calculatedSessions.includes(x));
+                if (notCalculatedSessions.length > 0) {
+                    notCalculatedSessions.forEach((session) => {
+                        let obj = {
+                            session_id: session,
+                            overall_workload: 0,
+                        }
+                        workloadArray.push(obj);
+                    })
+                }
+
+                // Sort by Session Semester
+                workloadArray.sort((a, b) => b.session_id.localeCompare(a.session_id));
+                workloadLecturerMap.set(id, workloadArray);
+            });
+
+            $localStorage.workloadByLecturerMap = [...workloadLecturerMap];
         }
 
         function getWorkloadMap() {
@@ -159,6 +209,24 @@
 
         function getWorkload(session = $localStorage.selectedSession) {
             return new Map($localStorage.workloadMap).get(session);
+        }
+
+        function getWorkloadLecturer(id = $localStorage.selectedLecturer) {
+            let workloadLecturerMap = new Map($localStorage.workloadByLecturerMap);
+            return workloadLecturerMap.get(Number(id));
+        }
+
+        function getColorByValue(value) {
+            if (value == null) {
+                return '';
+            }
+            else if (value <= 0.25) {
+                return 'is-success is-striped'
+            }
+            else if (value <= 0.75) {
+                return 'is-warning'
+            }
+            return 'is-danger';
         }
     }
 })();

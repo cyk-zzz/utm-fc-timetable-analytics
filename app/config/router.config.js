@@ -25,8 +25,16 @@
       // controller: 'DashboardController as dashboard',
     }
 
+    var lecturer = {
+      name: 'lecturer',
+      url: '/lecturer',
+      templateUrl: 'lecturer/lecturer.html',
+      // controller: 'DashboardController as dashboard',
+    }
+
     $stateProvider.state(login);
     $stateProvider.state(workload);
+    $stateProvider.state(lecturer);
   }
 
 })();

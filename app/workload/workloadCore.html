@@ -1,12 +1,12 @@
-<ng-controller ng-controller="WorkloadController as workload">
+<ng-controller ng-controller="WorkloadController as workload" ng-init="workload.checkData()">
 
     <!-- Doughnut Chart -->
 
     <div class="box">
         <progress ng-hide='workload.getLoading()' class="progress is-small is-success" max="100">20%</progress>
         <label class="label">Workload Summary</label>
-        <canvas id="bar" class="chart chart-doughnut" chart-data="workload.chartData()"
-            chart-labels="workload.chartLabels" chart-colors="workload.chartColors" height="100px">
+        <canvas id="bar" class="chart chart-doughnut" chart-data="workload.summaryData()"
+            chart-labels="workload.summaryLabels" chart-colors="workload.summaryColors" chart-options="workload.summaryOptions" height="100px">
     </div>
 
     <!-- Workload View Mode Selector -->
@@ -25,8 +25,8 @@
 
     <div class="box" ng-hide="workload.viewMode!='columnChart'">
         <progress ng-hide='workload.getLoading()' class="progress is-small is-success" max="100">20%</progress>
-        <canvas id="bar" class="chart chart-horizontalBar" chart-data="workload.testData()"
-            chart-labels="workload.testLabels()" chart-series="workload.testSeries" chart-options="workload.topLegend"
+        <canvas id="bar" class="chart chart-horizontalBar" chart-data="workload.columnData()"
+            chart-labels="workload.columnLabels()" chart-series="workload.columnSeries" chart-options="workload.columnLegend"
             height="1000px">
     </div>
 
@@ -45,43 +45,46 @@
             <button class="button is-primary" ng-click="workload.sortBy('overall_workload')">Overall Workload</button>
         </div>
 
-        <table class="table is-narrow is-striped is-bordered">
-            <thead>
-                <tr>
-                    <th>Lecturer Name</th>
+        <div class="table-container">
+            <table class="table is-narrow is-striped is-bordered is-hoverable">
+                <thead>
+                    <tr>
+                        <th>Lecturer Name</th>
 
-                    <th>Subjects</th>
-                    <th>Normalized Subjects</th>
+                        <th>Subjects</th>
+                        <th>Normalized Subjects</th>
 
-                    <th>Weekly Classes (Hour)</th>
-                    <th>Normalized Weekly Classes (Hour)</th>
+                        <th>Weekly Classes (Hour)</th>
+                        <th>Normalized Weekly Classes (Hour)</th>
 
-                    <th>Students</th>
-                    <th>Normalized Students</th>
+                        <th>Students</th>
+                        <th>Normalized Students</th>
 
-                    <th>Overall Workload</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr
-                    ng-repeat="lecturer in workload.getWorkload() | orderBy:workload.sortProperty:workload.reverseOrder">
-                    <td>{{ lecturer.nama }}</td>
+                        <th>Overall Workload</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        ng-repeat="lecturer in workload.getWorkload() | orderBy:workload.sortProperty:workload.reverseOrder">
+                        <td>{{ lecturer.nama }}</td>
 
-                    <td>{{ lecturer.bil_subjek }}</td>
-                    <td> {{ lecturer.bil_subjek_norm |number : 3 }}</td>
+                        <td>{{ lecturer.bil_subjek }}</td>
+                        <td> {{ lecturer.bil_subjek_norm |number : 3 }}</td>
 
-                    <td>{{ lecturer.weekly_class }}</td>
-                    <td>{{ lecturer.weekly_class_norm | number : 3 }}</td>
+                        <td>{{ lecturer.weekly_class }}</td>
+                        <td>{{ lecturer.weekly_class_norm | number : 3 }}</td>
 
-                    <td>{{ lecturer.bil_pelajar }}</td>
-                    <td>{{ lecturer.bil_pelajar_norm| number : 3 }}</td>
+                        <td>{{ lecturer.bil_pelajar }}</td>
+                        <td>{{ lecturer.bil_pelajar_norm| number : 3 }}</td>
 
-                    <td ng-class="workload.getColorByValue(lecturer.overall_workload)">
-                        {{ lecturer.overall_workload | number : 3 }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                        <td ng-class="workload.getColorByValue(lecturer.overall_workload)">
+                            {{ lecturer.overall_workload | number : 3 }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
 </ng-controller>

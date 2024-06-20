@@ -80,6 +80,7 @@
   <script type="text/javascript" src="services/session.service.js"></script>
   <script type="text/javascript" src="services/lecturer.service.js"></script>
   <script type="text/javascript" src="services/workload.service.js"></script>
+  <script type="text/javascript" src="services/status.service.js"></script>
   <script type="text/javascript" src="services/ttms.service.js"></script>
 
   <!-- Controller -->
@@ -87,8 +88,11 @@
   <script type="text/javascript" src="sideNav/sidenav.controller.js"></script>
   <script type="text/javascript" src="session/session.controller.js"></script>
   <script type="text/javascript" src="workload/workload.controller.js"></script>
+  <script type="text/javascript" src="lecturer/lecturer.controller.js"></script>
+  <script type="text/javascript" src="status/status.controller.js"></script>
 
   <!-- Filter -->
+  <script type="text/javascript" src="filter/session.filter.js"></script>
 
   <!-- Styling -->
   <link rel="stylesheet" href="app.css" />
@@ -107,7 +111,7 @@
 
 <body>
   <div ng-app="app" ng-init="" class="hero is-fullheight">
-
+    
     <ui-view class="hero is-fullheight"></ui-view>
 
     <ng-include class="" src="'components/footer.html'"></ng-include>

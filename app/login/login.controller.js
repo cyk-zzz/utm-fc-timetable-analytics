@@ -5,9 +5,9 @@
         .module('app')
         .controller('LoginController', LoginController)
 
-    LoginController.$inject = ['$log', '$state', 'AuthService', 'SessionService', 'LecturerService'];
+    LoginController.$inject = ['$log', '$state', 'AuthService'];
 
-    function LoginController($log, $state, AuthService, SessionService, LecturerService) {
+    function LoginController($log, $state, AuthService) {
         var vm = this;
 
         vm.username = '';
@@ -25,12 +25,8 @@
                 .finally(() => vm.loading = false)
 
             function loginSuccess() {
-                SessionService.fetchAll()
-                    .then(() => LecturerService.fetchAll(), AuthService.logout)
-                    // .then(() => LecturerService.fetchAllSessions(), AuthService.logout)
-                    // .then(() => LecturerService.fetchSubjectsAllSessions(), AuthService.logout)
-                    // .then(() => LecturerService.fetchClassesAllSessions(), AuthService.logout)
-                    ;
+                // SessionService.fetchAll()
+                //     .then(() => LecturerService.fetchAll(), AuthService.logout)
 
                 $state.go("workload");
             }

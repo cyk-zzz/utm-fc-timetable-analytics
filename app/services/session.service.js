@@ -26,6 +26,7 @@
 
             if ($localStorage.sessions) {
                 deferred.resolve("Session Semester Exists");
+                return deferred.promise;
             }
 
             return TTMS.sesisemester()
@@ -50,7 +51,8 @@
             }
 
             function getSessionsFailed(error) {
-                deferred.reject(error);
+                $log.debug(error);
+                deferred.reject();
                 return deferred.promise;
             }
         }
