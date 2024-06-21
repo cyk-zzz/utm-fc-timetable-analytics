@@ -1,12 +1,30 @@
 <ng-controller ng-controller="WorkloadController as workload" ng-init="workload.checkData()">
 
+    <!-- Session Selector -->
+
+    <div class="box">
+        <label class="label">Select Session Semester</label>
+        <div class="select">
+            <select ng-model="workload.selectSession" ng-change="session.selectSession()"
+                ng-model-options=" {getterSetter: true }">
+                <option ng-repeat="ss in workload.getAllSessions()" value="{{ss.sesi_semester_id}}">
+                    {{ss.sesi_semester_id | SessionFilter}}
+                </option>
+            </select>
+        </div>
+
+        <button class="button is-primary" ng-click="workload.updateSession()"
+            ng-class="{true:'is-loading', false:''}[!workload.getLoading()]">Update</button>
+    </div>
+
     <!-- Doughnut Chart -->
 
     <div class="box">
         <progress ng-hide='workload.getLoading()' class="progress is-small is-success" max="100">20%</progress>
         <label class="label">Workload Summary</label>
         <canvas id="bar" class="chart chart-doughnut" chart-data="workload.summaryData()"
-            chart-labels="workload.summaryLabels" chart-colors="workload.summaryColors" chart-options="workload.summaryOptions" height="100px">
+            chart-labels="workload.summaryLabels" chart-colors="workload.summaryColors"
+            chart-options="workload.summaryOptions" height="100px">
     </div>
 
     <!-- Workload View Mode Selector -->
@@ -14,28 +32,19 @@
     <div class="box">
         <label class="label">Select Workload View Mode</label>
         <div class="select">
-            <select ng-model="workload.viewMode">
+            <select ng-model="workload.viewMode" on-change>
                 <option value="columnChart"> Column Chart</option>
                 <option value="table"> Table</option>
             </select>
         </div>
     </div>
 
-    <!-- Column Chart -->
-
-    <div class="box" ng-hide="workload.viewMode!='columnChart'">
-        <progress ng-hide='workload.getLoading()' class="progress is-small is-success" max="100">20%</progress>
-        <canvas id="bar" class="chart chart-horizontalBar" chart-data="workload.columnData()"
-            chart-labels="workload.columnLabels()" chart-series="workload.columnSeries" chart-options="workload.columnLegend"
-            height="1000px">
-    </div>
-
-    <!-- Table -->
-
-    <div class="box" ng-hide="workload.viewMode!='table'">
+    <div class="box">
         <progress ng-hide='workload.getLoading()' class="progress is-small is-success" max="100">20%</progress>
 
         <label class="label">Sort By</label>
+
+        <!-- Sort By -->
 
         <div class="block">
             <button class="button is-primary" ng-click="workload.sortBy('nama')">Lecturer Name</button>
@@ -45,7 +54,17 @@
             <button class="button is-primary" ng-click="workload.sortBy('overall_workload')">Overall Workload</button>
         </div>
 
-        <div class="table-container">
+        <!-- Column Chart -->
+
+        <canvas id="bar" ng-hide="workload.viewMode!='columnChart'" class="chart chart-horizontalBar"
+            chart-data="[workload.columnSubjects, workload.columnWeeklyClasses, workload.columnStudents]"
+            chart-labels="workload.columnLabels" chart-series="workload.columnSeries"
+            chart-options="workload.columnLegend" height="1000px">
+        </canvas>
+
+        <!-- Table -->
+
+        <div class="table-container" ng-hide="workload.viewMode!='table'">
             <table class="table is-narrow is-striped is-bordered is-hoverable">
                 <thead>
                     <tr>

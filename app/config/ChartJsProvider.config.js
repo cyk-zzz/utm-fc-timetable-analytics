@@ -9,15 +9,12 @@
 
     function ChartJsProvider(ChartJsProvider) {
         ChartJsProvider.setOptions({
-            chartColors: ['#e60049', '#0bb4ff', '#50e991'],
             responsive: true,
-            legend: {
-                display: true,
-                position: 'right',
-            },
+            // chartColors : [ '#803690', '#4D5360', '#DCDCDC', '#46BFBD', '#FDB45C', '#949FB1', '#4D5360'],
+            chartColors: ['#488f31', '#0083a6', '#de425b'],
         });
 
-        // Configure all line charts
+        // Configure all bar charts
         ChartJsProvider.setOptions('horizontalBar', {
             scales: {
                 xAxes: [{
@@ -30,21 +27,21 @@
         });
 
         // Configure all line charts
-        ChartJsProvider.setOptions('line', {
-            showLines: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        fontSize: 20
-                    }
-                }],
-                xAxes: [{
-                    ticks: {
-                        fontSize: 20
-                    }
-                }]
-            }
-        });
+        // ChartJsProvider.setOptions('line', {
+        //     showLines: false,
+        //     scales: {
+        //         yAxes: [{
+        //             ticks: {
+        //                 fontSize: 20
+        //             }
+        //         }],
+        //         xAxes: [{
+        //             ticks: {
+        //                 fontSize: 20
+        //             }
+        //         }]
+        //     }
+        // });
     }
 
 })();

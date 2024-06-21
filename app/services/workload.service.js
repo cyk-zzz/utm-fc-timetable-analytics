@@ -96,8 +96,7 @@
             workloadMap.set(selectedSession, data);
             $localStorage.workloadMap = [...workloadMap];
             // $localStorage.workloadSummary = workloadSummary;
-
-            calculateColumnChart();
+            // calculateColumnChart();
         }
 
         function calculateColumnChart(selectedSession = $localStorage.selectedSession) {

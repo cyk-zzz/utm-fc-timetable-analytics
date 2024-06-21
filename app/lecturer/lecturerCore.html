@@ -14,8 +14,20 @@
 
     <!-- Table -->
 
-    <div class="box">
+    <!-- Lecturer Selector -->
 
+    <div class="box">
+        <label class="label">Select Lecturer</label>
+        <div class="select">
+            <select ng-model="lecturer.select" ng-change="lecturer.select()" ng-model-options=" {getterSetter: true }">
+                <option ng-repeat="l in lecturer.getAllName" value="{{l.id}}">
+                    {{l.name | TitleCase}}
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <div class="box">
         <div class="table-container">
             <table class="table is-striped is-bordered is-hoverable">
                 <thead>
@@ -28,14 +40,17 @@
                     <tr ng-repeat="workload in lecturer.getWorkload()"">
                         <td>{{ workload.session_id | SessionFilter }}</td>
 
-                        <td ng-class="lecturer.getColorByValue(workload.overall_workload)">
-                            {{ workload.overall_workload | number : 3 }}
+                        <td ng-class=" lecturer.getColorByValue(workload.overall_workload)">
+                        {{ workload.overall_workload | number : 3 }}
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+    </div>
 
+    <div class="box">
+        <canvas id="line" class="chart chart-line" chart-data="lecturer.testData" chart-labels="lecturer.testLabels" chart-series="lecturer.testSeries" chart-options="lecturer.testOptions"></canvas>
     </div>
 
 </ng-controller>

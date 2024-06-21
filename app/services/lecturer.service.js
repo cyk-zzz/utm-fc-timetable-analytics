@@ -72,8 +72,6 @@
         function update(update = true) {
             var deferred = $q.defer();
 
-            StatusService.setLoading(true);
-
             var currentSession = SessionService.getSelected();
 
             fetchSession(update, currentSession.sesi_semester_id)
@@ -84,14 +82,12 @@
             function updateSuccess() {
                 $log.debug(`Updated ${currentSession} Data`);
                 StatusService.setStatus('Idle');
-                StatusService.setLoading(false);
                 deferred.resolve();
             }
 
             function updateFailed() {
                 $log.debug(`Updated ${currentSession} Data Failed`);
                 StatusService.setStatus('Idle');
-                StatusService.setLoading(false);
                 deferred.reject();
             }
 

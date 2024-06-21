@@ -5,9 +5,9 @@
         .module('app')
         .controller('LecturerController', LecturerController)
 
-    LecturerController.$inject = ['LecturerService', 'WorkloadService'];
+    LecturerController.$inject = ['LecturerService', 'WorkloadService', '$filter'];
 
-    function LecturerController(LecturerService, WorkloadService) {
+    function LecturerController(LecturerService, WorkloadService, $filter) {
         var vm = this;
 
         vm.select = select;
@@ -17,6 +17,28 @@
         vm.getWorkload = WorkloadService.getWorkloadLecturer;
         vm.getColorByValue = WorkloadService.getColorByValue;
         vm.checkData = checkData;
+
+        vm.testLabels = WorkloadService.getWorkloadLecturer()?.map((x) => { return $filter('SessionFilter')(x.session_id) })
+        vm.testSeries = ["Overall Workload"];
+        vm.testData = WorkloadService.getWorkloadLecturer()?.map((x) => { return x.overall_workload });
+        vm.testOptions = {
+            scales: {
+                yAxes: [
+                    {
+                        id: 'y-axis-1',
+                        type: 'linear',
+                        display: true,
+                        position: 'left'
+                    },
+                    {
+                        id: 'y-axis-2',
+                        type: 'linear',
+                        display: true,
+                        position: 'right'
+                    }
+                ]
+            }
+        }
 
         function select(value) {
             if (angular.isDefined(value)) {
@@ -31,5 +53,6 @@
                 .then(() => LecturerService.fetchAll(), AuthService.logout)
                 .catch(AuthService.logout);
         }
-    }
+
+    };
 })();
