@@ -42,7 +42,7 @@
             },
         }
 
-        vm.columnColors = ['#003f5c', '#58508d', '#bc5090', '#ff6361', '#ff6361', '#ffa600'];
+        vm.columnColors = ['#6666FF', '#FF0000', '#66CC00'];
         vm.columnLabels = $filter('orderBy')(getWorkload(), this.sortProperty, this.reverseOrder)?.map((x) => { return x.nama });
         vm.columnSeries = ['Normalized Subjects', 'Normalized Weekly Class', 'Normalized Students'];
 

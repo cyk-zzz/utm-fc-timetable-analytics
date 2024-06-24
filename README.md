@@ -23,6 +23,11 @@
 - CSS - Bulma CSS
 - Icons - Font Awesome 6.5.2
 
+## Colors
+- Green '#48C78E'
+- Warning '#FFb70F'
+- Red '#FF6685'
+
 # Feature
 - 
 

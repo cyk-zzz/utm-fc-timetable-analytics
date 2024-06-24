@@ -1,4 +1,4 @@
-<ng-controller ng-controller="LecturerController as lecturer">
+<ng-controller ng-controller="LecturerController as lecturer" ng-init="lecturer.checkData()">
 
     <!-- Lecturer Workload View Mode Selector -->
 
@@ -50,7 +50,15 @@
     </div>
 
     <div class="box">
-        <canvas id="line" class="chart chart-line" chart-data="lecturer.testData" chart-labels="lecturer.testLabels" chart-series="lecturer.testSeries" chart-options="lecturer.testOptions"></canvas>
+        <canvas id="bar"
+         class="chart chart-bar" 
+         chart-data="lecturer.columnData" 
+         chart-labels="lecturer.columnLabels" 
+         chart-colors="lecturer.columnColors" 
+         chart-options="lecturer.columnOptions"
+         height="50px"
+         >
+        </canvas>
     </div>
 
 </ng-controller>

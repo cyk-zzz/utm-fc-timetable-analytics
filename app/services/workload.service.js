@@ -34,11 +34,11 @@
             const minSubjects = 0;
 
             for (var i = 0; i < size; i++) {
-                lecturers[i].weekly_class = lecturers[i].classes.length;
+                lecturers[i].weekly_classes = lecturers[i].classes.length;
             }
 
-            const maxWeeklyClass = lecturers.reduce((a, b) => a.weekly_class > b.weekly_class ? a : b).weekly_class;
-            const minWeeklyClass = 0;
+            const maxWeeklyClasses = lecturers.reduce((a, b) => a.weekly_classes > b.weekly_classes ? a : b).weekly_classes;
+            const minWeeklyClasses = 0;
 
             // const maxSections = lecturers.reduce((a, b) =>a.bil_seksyen > b.bil_seksyen ? a : b).bil_seksyen;
             // const minSections = lecturers.reduce((a, b) => a.bil_seksyen < b.bil_seksyen ? a : b).bil_seksyen;
@@ -55,16 +55,16 @@
                     maxSubjects,
                     minSubjects
                 );
-                lecturers[i].weekly_class_norm = normalize(
-                    lecturers[i].weekly_class,
-                    maxWeeklyClass,
-                    minWeeklyClass
+                lecturers[i].weekly_classes_norm = normalize(
+                    lecturers[i].weekly_classes,
+                    maxWeeklyClasses,
+                    minWeeklyClasses
                 );
 
                 lecturers[i].sum_normalized =
                     lecturers[i].bil_pelajar_norm +
                     lecturers[i].bil_subjek_norm +
-                    lecturers[i].weekly_class_norm;
+                    lecturers[i].weekly_classes_norm;
             }
 
             const maxNormalized = lecturers.reduce((a, b) => a.sum_normalized > b.sum_normalized ? a : b).sum_normalized;
@@ -119,7 +119,7 @@
 
             const weeklyClass = sortedLecturers
                 .map((x) => {
-                    return x.weekly_class_norm;
+                    return x.weekly_classes_norm;
                 });
 
             const students = sortedLecturers
@@ -153,17 +153,6 @@
             lecturerMap.forEach((name, id) => {
                 let workloadArray = [];
 
-                // Create Empty Workload
-                // sessions.forEach((session) => {
-                //     let workload = {
-                //         session_id: `${session.sesi_semester_id}`,
-                //         overall_workload: 0
-                //     }
-                //     workloadArray.push(workload);
-                // })
-
-                // $log.debug(workloadArray);
-
                 // Add Calculated Workload
                 workloadSessionMap.forEach((session, sessionId) => {
                     let lecturers = session.data;
@@ -173,6 +162,9 @@
                         if (lecturer.nama == name) {
                             let obj = {
                                 session_id: sessionId,
+                                subjects: lecturer.bil_subjek,
+                                students: lecturer.bil_pelajar,
+                                weekly_classes: lecturer.weekly_classes,
                                 overall_workload: lecturer.overall_workload,
                             }
                             workloadArray.push(obj);
@@ -188,6 +180,9 @@
                     notCalculatedSessions.forEach((session) => {
                         let obj = {
                             session_id: session,
+                            subjects: 0,
+                            students: 0,
+                            weekly_classes: 0,
                             overall_workload: 0,
                         }
                         workloadArray.push(obj);

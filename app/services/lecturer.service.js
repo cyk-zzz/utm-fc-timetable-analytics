@@ -3,9 +3,9 @@
 
     angular.module("app").factory("LecturerService", LecturerService);
 
-    LecturerService.$inject = ['$q', '$log', '$localStorage', 'TTMS', 'WorkloadService', 'SessionService', 'StatusService', 'AuthService'];
+    LecturerService.$inject = ['$q', '$log', '$filter', '$localStorage', 'TTMS', 'WorkloadService', 'SessionService', 'StatusService', 'AuthService'];
 
-    function LecturerService($q, $log, $localStorage, TTMS, WorkloadService, SessionService, StatusService, AuthService) {
+    function LecturerService($q, $log, $filter, $localStorage, TTMS, WorkloadService, SessionService, StatusService, AuthService) {
         var service = {
 
             fetchAll: fetchAll,
@@ -80,13 +80,15 @@
                 .then(updateSuccess, updateFailed);
 
             function updateSuccess() {
-                $log.debug(`Updated ${currentSession} Data`);
+                let session = $filter('SessionFilter')(currentSession)
+                $log.debug(`Updated ${session} Data`);
                 StatusService.setStatus('Idle');
                 deferred.resolve();
             }
 
             function updateFailed() {
-                $log.debug(`Updated ${currentSession} Data Failed`);
+                let session = $filter('SessionFilter')(currentSession)
+                $log.debug(`Updated ${session} Data Failed`);
                 StatusService.setStatus('Idle');
                 deferred.reject();
             }
@@ -179,7 +181,7 @@
 
             const lecturerCount = lecturers.length;
 
-            if (lecturers.some(x => x.hasOwnProperty('subjects')) == true && update == false) {
+            if (lecturers.every(x => x.hasOwnProperty('subjects')) == true && update == false) {
                 $log.debug(`Subjects Of Lecturers (${session}-${semester}) in Cache`);
                 deferred.resolve();
                 return deferred.promise;
@@ -236,7 +238,6 @@
 
             var promises = [];
             var workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
-            // var lecturers = workloadMap.get(selectedSession);
 
             var data = workloadMap.get(selectedSession);
             var lecturers = data.data;
@@ -246,7 +247,7 @@
 
             const lecturerCount = lecturers.length;
 
-            if (lecturers.some(x => x.hasOwnProperty('classes')) == true && update == false) {
+            if (lecturers.every(x => x.hasOwnProperty('classes')) == true && update == false) {
                 $log.debug(`Classes Of Lecturers (${session}-${semester}) in Cache`);
                 deferred.resolve();
                 WorkloadService.calculate(selectedSession);
@@ -258,7 +259,7 @@
 
             for (let i = 0; i < lecturerCount; i++) {
                 const subjectCount = lecturers[i].subjects.length;
-                lecturers[i].classes = [];
+                let tempClasses = [];
 
                 for (let j = 0; j < subjectCount; j++) {
                     const subjectCode = lecturers[i].subjects[j].kod_subjek;
@@ -283,9 +284,9 @@
                         for (var slot = 0; slot < subjectTimetable.length; slot++) {
                             if (
                                 subjectTimetable[slot].hari != null &&
-                                !isDuplicate(subjectTimetable[slot], lecturers[i].classes)
+                                !isDuplicate(subjectTimetable[slot], tempClasses)
                             ) {
-                                lecturers[i].classes.push(subjectTimetable[slot]);
+                                tempClasses.push(subjectTimetable[slot]);
                             }
                         }
 
@@ -296,6 +297,8 @@
                         }
                     }
                 }
+
+                lecturers[i].classes = tempClasses;
             }
 
             $q.all(promises).then(() => {
