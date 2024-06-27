@@ -49,6 +49,7 @@
                         .then(() => fetchSession(update, next.sesi_semester_id, AuthService.logout)
                             .then(() => fetchSubjects(update, next.sesi_semester_id), AuthService.logout)
                             .then(() => fetchClasses(update, next.sesi_semester_id), AuthService.logout)
+                            .then(() => WorkloadService.calculate(next.sesi_semester_id), AuthService.logout)
                         );
                 }, $q.all())
                 .then(fetchAllSuccess, fetchAllFailed);
@@ -56,13 +57,13 @@
             function fetchAllSuccess() {
                 $log.debug(`Fetched All Workload in All Sessions (Last ${lastSession})`);
                 WorkloadService.calculateWorkloadByLecturer(lastSession);
-                StatusService.setStatus('Idle');
+                StatusService.set('Idle');
                 deferred.resolve();
             }
 
             function fetchAllFailed(error) {
                 $log.debug(`Fetched Workload Fail ${error}`);
-                StatusService.setStatus('Idle');
+                StatusService.set('Idle');
                 deferred.reject();
             }
 
@@ -75,21 +76,22 @@
             var currentSession = SessionService.getSelected();
 
             fetchSession(update, currentSession.sesi_semester_id)
-                .then(() => fetchSubjects(update, currentSession.sesi_semester_id))
-                .then(() => fetchClasses(update, currentSession.sesi_semester_id))
+                .then(() => fetchSubjects(update, currentSession.sesi_semester_id), AuthService.logout)
+                .then(() => fetchClasses(update, currentSession.sesi_semester_id), AuthService.logout)
+                .then(() => WorkloadService.calculate(currentSession.sesi_semester_id), AuthService.logout)
                 .then(updateSuccess, updateFailed);
 
             function updateSuccess() {
                 let session = $filter('SessionFilter')(currentSession)
                 $log.debug(`Updated ${session} Data`);
-                StatusService.setStatus('Idle');
+                StatusService.set('Idle');
                 deferred.resolve();
             }
 
             function updateFailed() {
                 let session = $filter('SessionFilter')(currentSession)
                 $log.debug(`Updated ${session} Data Failed`);
-                StatusService.setStatus('Idle');
+                StatusService.set('Idle');
                 deferred.reject();
             }
 
@@ -111,13 +113,19 @@
             const session = `${selectedSession.slice(0, 4)}/${selectedSession.slice(4, 8)}`;
             const semester = selectedSession.slice(8, 9);
 
-            if (new Map($localStorage.workloadMap).get(selectedSession) && update == false) {
+            let workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
+
+            if (
+                workloadMap?.get(selectedSession)
+                && update == false
+                && workloadMap?.get(selectedSession)?.complete == true
+            ) {
                 $log.debug(`Lecturers Data (${session}-${semester}) in Cache`);
                 deferred.resolve();
                 return deferred.promise;
             }
 
-            StatusService.setStatus(`Fetching Lecturers (${session}-${semester}) ......  DO NOT REFRESH`);
+            StatusService.set(`Downloading Lecturers (${session}-${semester}) ......`);
 
             return TTMS
                 .pensyarah($localStorage.sessionID, session, semester)
@@ -129,7 +137,6 @@
                     $log.error(`Fetch Lecturers (${session}-${semester}) Failed`);
                     deferred.reject();
                 } else {
-                    let workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
                     let lecturers = response.data;
 
                     let lecturerMap = !$localStorage.lecturerMap ? new Map() : new Map($localStorage.lecturerMap);
@@ -181,13 +188,17 @@
 
             const lecturerCount = lecturers.length;
 
-            if (lecturers.every(x => x.hasOwnProperty('subjects')) == true && update == false) {
+            if (
+                lecturers.every(x => x.hasOwnProperty('subjects')) == true 
+                && update == false
+                && data?.complete == true
+            ) {
                 $log.debug(`Subjects Of Lecturers (${session}-${semester}) in Cache`);
                 deferred.resolve();
                 return deferred.promise;
             }
 
-            StatusService.setStatus(`Fetching Subjects (${session}-${semester}) ...... DO NOT REFRESH`);
+            StatusService.set(`Downloading Subjects (${session}-${semester}) ......`);
             data.loading = true;
 
             for (let i = 0; i < lecturerCount; i++) {
@@ -247,14 +258,17 @@
 
             const lecturerCount = lecturers.length;
 
-            if (lecturers.every(x => x.hasOwnProperty('classes')) == true && update == false) {
+            if (
+                lecturers.every(x => x.hasOwnProperty('classes')) == true 
+                && update == false
+                && data?.complete == true
+            ){
                 $log.debug(`Classes Of Lecturers (${session}-${semester}) in Cache`);
                 deferred.resolve();
-                WorkloadService.calculate(selectedSession);
                 return deferred.promise;
             }
 
-            StatusService.setStatus(`Fetching Classes (${session}-${semester}) ......  DO NOT REFRESH`);
+            StatusService.set(`Downloading Classes (${session}-${semester}) ......`);
             data.loading = true;
 
             for (let i = 0; i < lecturerCount; i++) {
@@ -307,9 +321,9 @@
                 $localStorage.workloadMap = [...workloadMap];
                 $log.debug(`Fetched Classes Of Lecturers (${session}-${semester})`);
 
-                WorkloadService.calculate(selectedSession);
+                // WorkloadService.calculate(selectedSession);
 
-                StatusService.setStatus('Idle');
+                StatusService.set('Idle');
                 deferred.resolve();
             });
 
