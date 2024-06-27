@@ -11,17 +11,17 @@
     function StatusService($log, $localStorage) {
 
         var service = {
-            getStatus: getStatus,
-            setStatus: setStatus,
+            get: get,
+            set: set,
         };
 
         return service;
 
-        function getStatus() {
+        function get() {
             return $localStorage.status;
         }
 
-        function setStatus(status = 'Idle') {
+        function set(status = 'Idle') {
             $log.debug(status);
             $localStorage.status = status;
         }
