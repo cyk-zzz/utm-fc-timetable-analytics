@@ -14,11 +14,11 @@
         vm.reverseOrder = true;
 
         vm.viewMode = 'table';
-        vm.checkData = checkData;
+        vm.init = init;
 
         vm.getLoading = getLoading;
         vm.getWorkload = getWorkload;
-        vm.sortBy = sortBy;
+
         vm.getColorByValue = WorkloadService.getColorByValue;
 
         vm.summaryLabels = ['High', 'Medium High', 'Medium Low', 'Low'];
@@ -47,7 +47,7 @@
         vm.columnSeries = ['Normalized Subjects', 'Normalized Weekly Class', 'Normalized Students'];
 
         vm.columnSubjects = $filter('orderBy')(getWorkload(), this.sortProperty, this.reverseOrder)?.map((x) => { return x.bil_subjek_norm });
-        vm.columnWeeklyClasses = $filter('orderBy')(getWorkload(), this.sortProperty, this.reverseOrder)?.map((x) => { return x.weekly_class_norm });
+        vm.columnWeeklyClasses = $filter('orderBy')(getWorkload(), this.sortProperty, this.reverseOrder)?.map((x) => { return x.weekly_classes_norm });
         vm.columnStudents = $filter('orderBy')(getWorkload(), this.sortProperty, this.reverseOrder)?.map((x) => { return x.bil_pelajar_norm });
 
         vm.columnLegend = {
@@ -62,16 +62,25 @@
         vm.updateSession = updateSession;
         vm.selectSession = selectSession;
 
+        function init() {
+            init();
+        }
+
         function selectSession(sessionId) {
             if (angular.isDefined(sessionId)) {
                 SessionService.select(sessionId);
-                LecturerService.fetchSession(false, sessionId)
-                    .then(() => LecturerService.fetchSubjects(false, sessionId), AuthService.logout)
-                    .then(() => LecturerService.fetchClasses(false, sessionId), AuthService.logout)
-                    .then(() => refreshColumnChart(), AuthService.logout)
+                getData(sessionId);
             } else {
                 return SessionService.getSelected();
             }
+        }
+
+        function getData(sessionId) {
+            LecturerService.fetchSession(false, sessionId)
+                .then(() => LecturerService.fetchSubjects(false, sessionId), AuthService.logout)
+                .then(() => LecturerService.fetchClasses(false, sessionId), AuthService.logout)
+                .then(() => WorkloadService.calculate(sessionId), AuthService.logout)
+                .then(() => refreshColumnChart(), AuthService.logout)
         }
 
         function updateSession() {
@@ -90,19 +99,10 @@
             return WorkloadService?.getWorkload()?.summary;
         }
 
-        function sortBy(sortBy) {
-            vm.reverseOrder = (vm.sortProperty == sortBy) ?
-                vm.reverseOrder = !vm.reverseOrder :
-                vm.reverseOrder = false;
-            vm.sortProperty = sortBy;
-
-            refreshColumnChart();
-        }
-
-        function checkData() {
+        function init() {
             SessionService.fetchAll()
                 .then(() => LecturerService.fetchAll(), AuthService.logout)
-                .catch(AuthService.logout);
+                .then(() => getData(SessionService.getSelected()))
         }
 
         function refreshColumnChart() {

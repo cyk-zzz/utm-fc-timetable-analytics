@@ -1,4 +1,4 @@
-<ng-controller ng-controller="WorkloadController as workload" ng-init="workload.checkData()">
+<ng-controller ng-controller="WorkloadController as workload" ng-init="workload.init()">
 
     <!-- Session Selector -->
 
@@ -43,24 +43,40 @@
         <progress ng-hide='workload.getLoading()' class="progress is-small is-success" max="100">20%</progress>
 
         <label class="label">Sort By</label>
-
-        <!-- Sort By -->
-
-        <div class="block">
+        <!-- <div class="block">
             <button class="button is-primary" ng-click="workload.sortBy('nama')">Lecturer Name</button>
             <button class="button is-primary" ng-click="workload.sortBy('bil_subjek')">Subjects</button>
             <button class="button is-primary" ng-click="workload.sortBy('weekly_class')">Weekly Classes</button>
             <button class="button is-primary" ng-click="workload.sortBy('bil_pelajar')">Students</button>
             <button class="button is-primary" ng-click="workload.sortBy('overall_workload')">Overall Workload</button>
+        </div> -->
+
+        <div class="block">
+            <div class="select">
+                <select ng-model="workload.sortProperty" ng-init="workload.sortProperty='nama'">
+                    <option value="nama">Lecturer Name</option>
+                    <option value="bil_subjek">Subjects</option>
+                    <option value="weekly_classes">Weekly Classes</option>
+                    <option value="bil_pelajar">Students</option>
+                    <option value="overall_workload">Overall Workload</option>
+                </select>
+            </div>
+
+            <div class="select">
+                <select ng-model="workload.reverseOrder" ng-init="workload.reverseOrder=true">
+                    <option ng-value="true">Descending</option>
+                    <option ng-value="false">Ascending</option>
+                </select>
+            </div>
         </div>
+
 
         <!-- Column Chart -->
 
         <canvas id="bar" ng-hide="workload.viewMode!='columnChart'" class="chart chart-horizontalBar"
             chart-data="[workload.columnSubjects, workload.columnWeeklyClasses, workload.columnStudents]"
             chart-labels="workload.columnLabels" chart-series="workload.columnSeries"
-            chart-colors="workload.columnColors"
-            chart-options="workload.columnLegend" height="1000px">
+            chart-colors="workload.columnColors" chart-options="workload.columnLegend" height="1000px">
         </canvas>
 
         <!-- Table -->
@@ -91,8 +107,8 @@
                         <td>{{ lecturer.bil_subjek }}</td>
                         <td> {{ lecturer.bil_subjek_norm |number : 3 }}</td>
 
-                        <td>{{ lecturer.weekly_class }}</td>
-                        <td>{{ lecturer.weekly_class_norm | number : 3 }}</td>
+                        <td>{{ lecturer.weekly_classes }}</td>
+                        <td>{{ lecturer.weekly_classes_norm | number : 3 }}</td>
 
                         <td>{{ lecturer.bil_pelajar }}</td>
                         <td>{{ lecturer.bil_pelajar_norm| number : 3 }}</td>
