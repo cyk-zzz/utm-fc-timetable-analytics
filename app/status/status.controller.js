@@ -10,7 +10,6 @@
     function StatusController(StatusService) {
         var vm = this;
 
-        vm.loading = StatusService.getLoading;
-        vm.get = StatusService.getStatus;
+        vm.get = StatusService.get;
     }
 })();
