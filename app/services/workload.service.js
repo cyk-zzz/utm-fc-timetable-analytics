@@ -3,9 +3,9 @@
 
     angular.module("app").factory("WorkloadService", WorkloadService);
 
-    WorkloadService.$inject = ['$log', '$localStorage', 'SessionService'];
+    WorkloadService.$inject = ['$log', '$localStorage', 'SessionService', 'StatusService'];
 
-    function WorkloadService($log, $localStorage, SessionService) {
+    function WorkloadService($log, $localStorage, SessionService, StatusService) {
         var service = {
             calculate: calculate,
 
@@ -21,11 +21,16 @@
 
         function calculate(selectedSession = $localStorage.selectedSession) {
             var workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
-
             var data = workloadMap.get(selectedSession);
             var lecturers = data.data;
             var workloadSummary = [0, 0, 0, 0];
             let size = lecturers.length;
+
+            const session = `${selectedSession.slice(0, 4)}/${selectedSession.slice(4, 8)}`;
+            const semester = selectedSession.slice(8, 9);
+
+            StatusService.set(`Calculating Workload (${session}-${semester}) ......`);
+            data.loading = true;
 
             const maxStudents = lecturers.reduce((a, b) => a.bil_pelajar > b.bil_pelajar ? a : b).bil_pelajar;
             const minStudents = 0;
@@ -92,9 +97,12 @@
             }
 
             data.loading = false;
+            data.complete = true;
             data.summary = workloadSummary;
             workloadMap.set(selectedSession, data);
             $localStorage.workloadMap = [...workloadMap];
+
+            StatusService.set("Idle");
             // $localStorage.workloadSummary = workloadSummary;
             // calculateColumnChart();
         }
