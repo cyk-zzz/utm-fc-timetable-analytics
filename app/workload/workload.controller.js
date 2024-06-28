@@ -61,6 +61,7 @@
         vm.getSelected = SessionService.getSelected;
         vm.updateSession = updateSession;
         vm.selectSession = selectSession;
+        vm.refreshColumnChart = refreshColumnChart;
 
         function init() {
             init();
@@ -106,9 +107,13 @@
         }
 
         function refreshColumnChart() {
+            if(vm.viewMode != 'columnChart'){
+                return 0;
+            }
+
             vm.columnLabels = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder).map((x) => { return x.nama });
             vm.columnSubjects = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder).map((x) => { return x.bil_subjek_norm });
-            vm.columnWeeklyClasses = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder).map((x) => { return x.weekly_class_norm });
+            vm.columnWeeklyClasses = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder).map((x) => { return x.weekly_classes_norm });
             vm.columnStudents = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder).map((x) => { return x.bil_pelajar_norm });
         }
     }
