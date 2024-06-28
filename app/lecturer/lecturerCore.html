@@ -1,26 +1,12 @@
 <ng-controller ng-controller="LecturerController as lecturer" ng-init="lecturer.checkData()">
 
-    <!-- Lecturer Workload View Mode Selector -->
-
-    <!-- <div class="box">
-        <label class="label">Select Workload View Mode</label>
-        <div class="select">
-            <select ng-model="workload.viewMode">
-                <option value="columnChart"> Column Chart</option>
-                <option value="table"> Table</option>
-            </select>
-        </div>
-    </div> -->
-
-    <!-- Table -->
-
     <!-- Lecturer Selector -->
 
     <div class="box">
         <label class="label">Select Lecturer</label>
         <div class="select">
             <select ng-model="lecturer.select" ng-change="lecturer.select()" ng-model-options=" {getterSetter: true }">
-                <option ng-repeat="l in lecturer.getAllName" value="{{l.id}}">
+                <option ng-repeat="l in lecturer.getAllName" ng-value="{{l.id}}">
                     {{l.name | TitleCase}}
                 </option>
             </select>
@@ -33,12 +19,19 @@
                 <thead>
                     <tr>
                         <th>Session</th>
+                        <th>Subjects</th>
+                        <th>Weekly Classes (Hour)</th>
+                        <th>Students</th>
                         <th>Overall Workload</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="workload in lecturer.getWorkload()"">
                         <td>{{ workload.session_id | SessionFilter }}</td>
+
+                        <td>{{ workload.subjects }}</td>
+                        <td>{{ workload.weekly_classes }}</td>
+                        <td>{{ workload.students }}</td>
 
                         <td ng-class=" lecturer.getColorByValue(workload.overall_workload)">
                         {{ workload.overall_workload | number : 3 }}
