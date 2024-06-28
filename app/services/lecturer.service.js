@@ -18,6 +18,8 @@
             getAll: getAll,
             getSelected: getSelected,
             select: select,
+
+            getSelectedName: getSelectedName,
         };
 
         return service;
@@ -336,6 +338,10 @@
 
         function getSelected() {
             return $localStorage.selectedLecturer;
+        }
+
+        function getSelectedName() {
+            return new Map($localStorage?.lecturerMap).get(getSelected());
         }
 
         function select(id) {
