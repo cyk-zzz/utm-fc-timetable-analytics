@@ -53,7 +53,8 @@
 
         <div class="block">
             <div class="select">
-                <select ng-model="workload.sortProperty" ng-init="workload.sortProperty='overall_workload'" ng-change="workload.refreshColumnChart()">
+                <select ng-model="workload.sortProperty" ng-init="workload.sortProperty='overall_workload'"
+                    ng-change="workload.refreshColumnChart()">
                     <option value="nama">Lecturer Name</option>
                     <option value="bil_subjek">Subjects</option>
                     <option value="weekly_classes">Weekly Classes</option>
@@ -63,13 +64,20 @@
             </div>
 
             <div class="select">
-                <select ng-model="workload.reverseOrder" ng-init="workload.reverseOrder=true" ng-change="workload.refreshColumnChart()">
+                <select ng-model="workload.reverseOrder" ng-init="workload.reverseOrder=true"
+                    ng-change="workload.refreshColumnChart()">
                     <option ng-value="true">Descending</option>
                     <option ng-value="false">Ascending</option>
                 </select>
             </div>
         </div>
 
+        <div class="field" ng-hide="workload.viewMode!='table'">
+            <label class="label">Search Lecturer Name</label>
+            <div class="control">
+                <input class="input" type="text" placeholder="Name......" ng-model="workload.search.nama">
+            </div>
+        </div>
 
         <!-- Column Chart -->
 
@@ -100,8 +108,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr
-                        ng-repeat="lecturer in workload.getWorkload() | orderBy:workload.sortProperty:workload.reverseOrder">
+                    <tr ng-repeat="lecturer in workload.getWorkload() | orderBy:workload.sortProperty:workload.reverseOrder | filter:workload.search"">
                         <td>{{ lecturer.nama | TitleCase}}</td>
 
                         <td>{{ lecturer.bil_subjek }}</td>
@@ -113,8 +120,8 @@
                         <td>{{ lecturer.bil_pelajar }}</td>
                         <td>{{ lecturer.bil_pelajar_norm| number : 3 }}</td>
 
-                        <td ng-class="workload.getColorByValue(lecturer.overall_workload)">
-                            {{ lecturer.overall_workload | number : 3 }}
+                        <td ng-class=" workload.getColorByValue(lecturer.overall_workload)">
+                        {{ lecturer.overall_workload | number : 3 }}
                         </td>
                     </tr>
                 </tbody>

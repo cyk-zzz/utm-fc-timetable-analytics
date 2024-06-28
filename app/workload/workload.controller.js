@@ -111,10 +111,17 @@
                 return 0;
             }
 
-            vm.columnLabels = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder).map((x) => { return x.nama });
-            vm.columnSubjects = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder).map((x) => { return x.bil_subjek_norm });
-            vm.columnWeeklyClasses = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder).map((x) => { return x.weekly_classes_norm });
-            vm.columnStudents = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder).map((x) => { return x.bil_pelajar_norm });
+            vm.columnLabels = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder);
+            vm.columnLabels =  vm.columnLabels.map((x) => { return x.nama });
+
+            vm.columnSubjects = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder);
+            vm.columnSubjects = vm.columnSubjects.map((x) => { return x.bil_subjek_norm });
+
+            vm.columnWeeklyClasses = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder);
+            vm.columnWeeklyClasses = vm.columnWeeklyClasses.map((x) => { return x.weekly_classes_norm });
+
+            vm.columnStudents = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder);
+            vm.columnStudents = vm.columnStudents.map((x) => { return x.bil_pelajar_norm });
         }
     }
 })();
