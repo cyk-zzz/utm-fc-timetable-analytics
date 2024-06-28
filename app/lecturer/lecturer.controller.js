@@ -21,34 +21,10 @@
         vm.getWorkload = WorkloadService.getWorkloadLecturer;
         vm.getColorByValue = WorkloadService.getColorByValue;
         vm.checkData = checkData;
+        vm.lecturerName = LecturerService.getSelectedName;
 
         function sortSession(a, b) {
             return a.session_id.localeCompare(b.session_id)
-        }
-
-        vm.columnLabels = WorkloadService.getWorkloadLecturer()
-            ?.sort(sortSession)
-            ?.map((x) => { return $filter('SessionFilter')(x.session_id) })
-        vm.columnSeries = ["Overall Workload"];
-        vm.columnData = WorkloadService.getWorkloadLecturer()
-            ?.sort(sortSession)
-            ?.map((x) => { return x.overall_workload });
-        vm.columnOptions = {
-            showLines: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        min: 0,
-                        max: 1,
-                        fontSize: 20
-                    }
-                }],
-                xAxes: [{
-                    ticks: {
-                        fontSize: 20
-                    }
-                }]
-            }
         }
 
         updateLineChart()
@@ -56,6 +32,7 @@
         function select(value) {
             if (angular.isDefined(value)) {
                 LecturerService.select(value);
+
             } else {
                 return LecturerService.getSelected();
             }
@@ -70,6 +47,31 @@
         }
 
         function updateLineChart() {
+            var lecturerName = $filter('TitleCase')(vm.lecturerName());
+
+            vm.columnOptions = {
+                title: {
+                    display: true,
+                    text: `${lecturerName}'s Overall Workload Last 10 Semesters`,
+                    fontSize: 20,
+                },
+                showLines: false,
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            min: 0,
+                            max: 1,
+                            fontSize: 20
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            minRotation: 35,
+                            fontSize: 20
+                        }
+                    }]
+                }
+            };
             vm.columnLabels = WorkloadService.getWorkloadLecturer()
                 ?.sort(sortSession)
                 ?.map((x) => { return $filter('SessionFilter')(x.session_id) });
