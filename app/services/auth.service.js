@@ -72,7 +72,7 @@
         function logout(reset = false) {
             var deferred = $q.defer();
 
-            if (reset) {
+            if (reset == true) {
                 $localStorage.$reset();
             }
 
