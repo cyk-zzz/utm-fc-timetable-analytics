@@ -24,7 +24,7 @@
         <label class="label">Workload Summary</label>
         <canvas id="bar" class="chart chart-doughnut" chart-data="workload.summaryData()"
             chart-labels="workload.summaryLabels" chart-colors="workload.summaryColors"
-            chart-options="workload.summaryOptions" height="100px">
+            chart-options="workload.summaryOptions" height="60px">
     </div>
 
     <!-- Workload View Mode Selector -->
@@ -84,7 +84,7 @@
         <canvas id="bar" ng-hide="workload.viewMode!='columnChart'" class="chart chart-horizontalBar"
             chart-data="[workload.columnSubjects, workload.columnWeeklyClasses, workload.columnStudents]"
             chart-labels="workload.columnLabels" chart-series="workload.columnSeries"
-            chart-colors="workload.columnColors" chart-options="workload.columnLegend" height="1000px">
+            chart-colors="workload.columnColors" chart-options="workload.columnLegend" height="700px">
         </canvas>
 
         <!-- Table -->
