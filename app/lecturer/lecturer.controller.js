@@ -87,6 +87,7 @@
             function getColumnColor(value) {
                 if (value == null) return '#FFFFFF';
                 else if (value <= 0.25) return '#48C78E'
+                else if (value <= 0.5) return '#FFDD8F'
                 else if (value <= 0.75) return '#FFb70F';
                 return '#FF6685';
             }
