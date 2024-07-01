@@ -32,9 +32,17 @@
       // controller: 'DashboardController as dashboard',
     }
 
+    var about = {
+      name: 'about',
+      url: '/about',
+      templateUrl: 'about/about.html',
+      // controller: 'DashboardController as dashboard',
+    }
+
     $stateProvider.state(login);
     $stateProvider.state(workload);
     $stateProvider.state(lecturer);
+    $stateProvider.state(about);
   }
 
 })();

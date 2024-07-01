@@ -1,0 +1,169 @@
+<div class="box">
+    <div class="block">
+        For this system, normalization technique is used to calculate workload. The example below will describe the
+        normalization technique used.
+    </div>
+
+    <div class="content block">
+        <h1>Calculating Normalized Subjects, Normalized Students and Normalized Weekly Classes</h1>
+    </div>
+
+    <div class="table-container">
+        <table class="table is-narrow is-striped is-bordered is-hoverable">
+            <thead>
+                <tr>
+                    <th>Lecturer Name</th>
+                    <th>Subjects</th>
+                    <th>Normalized Subjects</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>A</td>
+                    <td>20</td>
+                    <td>1.00</td>
+                </tr>
+
+                <tr>
+                    <td>B</td>
+                    <td>10</td>
+                    <td>0.50</td>
+                </tr>
+
+                <tr>
+                    <td>C</td>
+                    <td>5</td>
+                    <td>0.25</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="block">
+        From the table:
+        <br>
+        The highest subjects count is <b>20</b>
+        <br>
+        The lowest subjects count is <b>0</b> (there are lecturers that are teaching this semester)
+    </div>
+
+    <div class="block">
+        To calculate the normalized subjects:
+        <br>
+        We use the formula below:
+        <br>
+        (Current Lecturer's Subject Count - Lowest Subjects Count) / Highest Subjects Count
+        <br><br>
+        To calculate the normalized subjects of Lecturer <b>A</b>:
+        <br>
+        <b>Highest</b> Subjects Count = 20,
+        <br>
+        <b>Lowest</b> Subjects Count = 0,
+        <br>
+        Lecturer A's Subject Count = 20
+        <br>
+        Normalized Subjects = (20-0)/20 = <b>1.00</b>
+        <br><br>
+        To calculate the normalized subjects of Lecturer <b>C</b>:
+        <br>
+        <b>Highest</b> Subjects Count = 20,
+        <br>
+        <b>Lowest</b> Subjects Count = 0,
+        <br>
+        Lecturer C's Subject Count = 5
+        <br>
+        Normalized Subjects = (5-0)/20 = 5/20 = <b>0.25</b>
+    </div>
+
+
+
+</div>
+
+<div class="box">
+    <div class="content block">
+        <h1>Calculating Normalized Workload</h1>
+    </div>
+
+    <div class="table-container">
+        <table class="table is-narrow is-striped is-bordered is-hoverable">
+            <thead>
+                <tr>
+                    <th>Lecturer Name</th>
+                    <th>Subjects</th>
+                    <th>Normalized Subjects</th>
+                    <th>Students</th>
+                    <th>Normalized Students</th>
+                    <th>Weekly Classes (Hour)</th>
+                    <th>Normalized Weekly Classes</th>
+                    <th>Sum Normalized...(Hidden From Page)</th>
+                    <th>Overall Workload</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>A</td>
+                    <td>20</td>
+                    <td>1.00</td>
+                    <td>50</td>
+                    <td>0.50</td>
+                    <td>10</td>
+                    <td>1.00</td>
+                    <td>2.50</td>
+                    <td>1.00</td>
+                </tr>
+
+                <tr>
+                    <td>B</td>
+                    <td>10</td>
+                    <td>0.50</td>
+                    <td>100</td>
+                    <td>1.00</td>
+                    <td>5</td>
+                    <td>0.50</td>
+                    <td>2.50</td>
+                    <td>1.00</td>
+                </tr>
+
+                <tr>
+                    <td>C</td>
+                    <td>5</td>
+                    <td>0.25</td>
+                    <td>10</td>
+                    <td>0.10</td>
+                    <td>5</td>
+                    <td>0.50</td>
+                    <td>0.85</td>
+                    <td>0.34</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="block">
+        The formula used is same as calculating normalized subjects, students and weekly classes(Sum Normalized...)
+        <br>
+        (Current Lecturer's Sum Normalized... - Lowest Sum Normalized...) / Highest Sum Normalized...
+        <br><br>
+        To calculate the overall workload of Lecturer <b>A</b>:
+        <br>
+        <b>Highest</b> Sum Normalized... = 2.50,
+        <br>
+        <b>Lowest</b> Sum Normalized... = 0.00,
+        <br>
+        Lecturer A's Sum Normalized = 2.50
+        <br>
+        Overall Workload = (2.50-0)/2.50 = <b>1.00</b>
+        <br><br>
+        To calculate the normalized subjects of Lecturer <b>C</b>:
+        <br>
+        <b>Highest</b> Sum Normalized... = 2.50,
+        <br>
+        <b>Lowest</b> Sum Normalized... = 0.00,
+        <br>
+        Lecturer C's Sum Normalized... = 0.85
+        <br>
+        Normalized Subjects = (0.85-0)/2.50 = <b>0.34</b>
+    </div>
+</div>

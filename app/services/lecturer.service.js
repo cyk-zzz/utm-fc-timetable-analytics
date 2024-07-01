@@ -143,6 +143,10 @@
 
                     let lecturerMap = !$localStorage.lecturerMap ? new Map() : new Map($localStorage.lecturerMap);
                     lecturers.forEach((lecturer) => {
+                        // var obj = {
+                        //     name: lecturer.nama,
+                        // }
+
                         lecturerMap.set(lecturer.no_pekerja, lecturer.nama);
                     })
 
@@ -181,6 +185,7 @@
 
             var promises = [];
             var workloadMap = !$localStorage.workloadMap ? new Map() : new Map($localStorage.workloadMap);
+            var lecturerMap = !$localStorage.lecturerMap ? new Map() : new Map($localStorage.lecturerMap);
 
             var data = workloadMap.get(selectedSession);
             var lecturers = data.data;
@@ -212,7 +217,8 @@
                 promises.push(promise);
 
                 function getLecturerSubjectsComplete(response) {
-                    var subjectSessionSemester = response.data.filter(function (subject) {
+                    var subjects = response.data;
+                    var subjectSessionSemester = subjects.filter(function (subject) {
                         return subject.sesi == session && subject.semester == semester;
                     });
 
