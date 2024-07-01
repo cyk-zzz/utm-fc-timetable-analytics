@@ -5,9 +5,9 @@
         .module('app')
         .controller('WorkloadController', WorkloadController)
 
-    WorkloadController.$inject = ['$log', '$filter', 'WorkloadService', 'LecturerService', 'AuthService', 'SessionService'];
+    WorkloadController.$inject = ['$log', '$filter', 'COLOR', 'WorkloadService', 'LecturerService', 'AuthService', 'SessionService'];
 
-    function WorkloadController($log, $filter, WorkloadService, LecturerService, AuthService, SessionService) {
+    function WorkloadController($log, $filter, COLOR, WorkloadService, LecturerService, AuthService, SessionService) {
         var vm = this;
 
         vm.sortProperty = 'sum_normalized';
@@ -23,7 +23,7 @@
 
         vm.summaryLabels = ['High', 'Medium High', 'Medium Low', 'Low'];
         vm.summaryData = getWorkloadSummary;
-        vm.summaryColors = ['#FF6685', '#FFB70F', '#FFDD8F', '#48C78E'];
+        vm.summaryColors = [COLOR.HIGH, COLOR.MEDIUM_HIGH, COLOR.MEDIUM_LOW, COLOR.LOW];
         vm.summaryOptions = {
             legend: {
                 display: true,

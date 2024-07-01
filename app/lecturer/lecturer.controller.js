@@ -5,9 +5,9 @@
         .module('app')
         .controller('LecturerController', LecturerController)
 
-    LecturerController.$inject = ['$filter', 'LecturerService', 'WorkloadService', 'AuthService', 'SessionService'];
+    LecturerController.$inject = ['$filter', 'COLOR', 'LecturerService', 'WorkloadService', 'AuthService', 'SessionService'];
 
-    function LecturerController($filter, LecturerService, WorkloadService, AuthService, SessionService) {
+    function LecturerController($filter, COLOR, LecturerService, WorkloadService, AuthService, SessionService) {
         var vm = this;
 
         vm.select = select;
@@ -86,10 +86,10 @@
 
             function getColumnColor(value) {
                 if (value == null) return '#FFFFFF';
-                else if (value <= 0.25) return '#48C78E'
-                else if (value <= 0.5) return '#FFDD8F'
-                else if (value <= 0.75) return '#FFb70F';
-                return '#FF6685';
+                else if (value <= 0.25) return COLOR.LOW
+                else if (value <= 0.5) return COLOR.MEDIUM_LOW
+                else if (value <= 0.75) return COLOR.MEDIUM_HIGH;
+                return COLOR.HIGH;
             }
         }
 

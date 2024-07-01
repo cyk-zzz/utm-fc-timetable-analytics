@@ -3,7 +3,8 @@
 
     angular
         .module('app')
-        .constant('API', Api());
+        .constant('API', Api())
+        .constant('COLOR', Color());
 
     function Api() {
         var BASE_URL = 'http://web.fc.utm.my/ttms';
@@ -15,6 +16,17 @@
         }
 
         return constant;
+    }
+
+    function Color(){
+        var constant = {
+            LOW: '#48C78E',
+            MEDIUM_LOW: '#FFDD8F',
+            MEDIUM_HIGH: '#FFb70F',
+            HIGH: '#FF6685'
+        }
+
+        return constant
     }
 
 }());
