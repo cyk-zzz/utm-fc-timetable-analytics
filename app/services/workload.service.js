@@ -3,9 +3,9 @@
 
     angular.module("app").factory("WorkloadService", WorkloadService);
 
-    WorkloadService.$inject = ['$q', 'TTMS', '$localStorage', 'SessionService', 'StatusService'];
+    WorkloadService.$inject = ['$q', '$log', 'TTMS', '$localStorage', 'SessionService', 'StatusService'];
 
-    function WorkloadService($q, TTMS, $localStorage, SessionService, StatusService) {
+    function WorkloadService($q, $log, TTMS, $localStorage, SessionService, StatusService) {
         var service = {
             calculate: calculate,
 
@@ -97,6 +97,13 @@
                 else {
                     workloadSummary[0]++;
                 }
+            }
+
+            // Sort by Overall Workload (High to Low)
+            // Get Ranking
+            lecturers.sort((a, b) => b.overall_workload - a.overall_workload)
+            for (var i = 0; i < size; i++) {
+                lecturers[i].ranking = i+1;
             }
 
             data.loading = false;
@@ -228,8 +235,11 @@
             else if (value <= 0.25) {
                 return 'is-success is-striped'
             }
+            else if (value <= 0.50) {
+                return 'has-background-warning-80'
+            }
             else if (value <= 0.75) {
-                return 'is-warning'
+                return 'has-background-warning'
             }
             return 'is-danger';
         }

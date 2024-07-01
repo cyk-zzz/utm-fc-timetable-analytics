@@ -38,12 +38,12 @@
 
         return service;
 
-        function login(username, password){
+        function login(username, password) {
             const url = `${API.URL}entity=authentication&login=${username}&password=${password}`;
             return $http.get(url);
         }
 
-        function login_admin(session_id){
+        function login_admin(session_id) {
             const url = `${API.URL_ADMIN}session_id=${session_id}`;
             return $http.get(url);
         }
@@ -78,32 +78,32 @@
             return $http.get(url);
         }
 
-        function subjek_seksyen(sesi, semester){
+        function subjek_seksyen(sesi, semester) {
             const url = `${API.URL}entity=subjek_seksyen&sesi=${sesi}&semester=${semester}`;
             return $http.get(url);
         }
 
-        function subjek_pelajar(session_id, sesi, semester, kod_subjek, seksyen){
+        function subjek_pelajar(session_id, sesi, semester, kod_subjek, seksyen) {
             const url = `${API.URL}entity=subjek_pelajar&session_id=${session_id}&sesi=${sesi}&semester=${semester}&kod_subjek=${kod_subjek}&seksyen=${seksyen}`;
             return $http.get(url);
         }
 
-        function subjek_pensyarah(kod_subjek, sesi, semester, seksyen){
+        function subjek_pensyarah(kod_subjek, sesi, semester, seksyen) {
             const url = `${API.URL}entity=subjek_pensyarah&kod_subjek=${kod_subjek}&sesi=${sesi}&semester=${semester}&seksyen=${seksyen}`;
             return $http.get(url);
         }
 
-        function ruang(kod_fakulti, kod_ruang_like){
+        function ruang(kod_fakulti, kod_ruang_like) {
             const url = `${API.URL}entity=ruang&kod_fakulti=${kod_fakulti}&kod_ruang_like=${kod_ruang_like}`;
             return $http.get(url);
         }
 
-        function jadual_ruang(sesi, semester, kod_ruang){
+        function jadual_ruang(sesi, semester, kod_ruang) {
             const url = `${API.URL}entity=jadual_ruang&sesi=${sesi}&semester=${semester}&kod_ruang=${kod_ruang}`;
             return $http.get(url);
         }
 
-        function jadual_subjek(sesi, semester, kod_subjek, seksyen){
+        function jadual_subjek(sesi, semester, kod_subjek, seksyen) {
             const url = `${API.URL}entity=jadual_subjek&sesi=${sesi}&semester=${semester}&kod_subjek=${kod_subjek}&seksyen=${seksyen}`;
             return $http.get(url);
         }
@@ -115,8 +115,10 @@
                 .then(fetchSuccess, fetchFail)
 
             function fetchSuccess(response) {
-                $localStorage.workloadMap = new Map(response.data);
-                $log.debug("Loaded Calculated workloadMap.json")
+                if (!$localStorage.workloadMap) {
+                    $localStorage.workloadMap = new Map(response.data);
+                    $log.debug("Loaded Calculated workloadMap.json")
+                }
                 deferred.resolve();
             }
 
@@ -135,8 +137,10 @@
                 .then(fetchSuccess, fetchFail)
 
             function fetchSuccess(response) {
-                $localStorage.workloadByLecturerMap = new Map(response.data);
-                $log.debug("Loaded Calculated workloadByLecturerMap.json")
+                if (!$localStorage.workloadByLecturerMap) {
+                    $localStorage.workloadByLecturerMap = new Map(response.data);
+                    $log.debug("Loaded Calculated workloadByLecturerMap.json")
+                }
                 deferred.resolve();
             }
 
@@ -155,8 +159,10 @@
                 .then(fetchSuccess, fetchFail)
 
             function fetchSuccess(response) {
-                $localStorage.lecturerMap = new Map(response.data);
-                $log.debug("Loaded lecturerMap.json")
+                if (!$localStorage.lecturerMap) {
+                    $localStorage.lecturerMap = response.data;
+                    $log.debug("Loaded lecturerMap.json")
+                }
                 deferred.resolve();
             }
 

@@ -18,7 +18,7 @@
             getAll: getAll,
             getSelected: getSelected,
             select: select,
-            getSelectedName: getSelectedName,
+            getName: getName,
             loadLecturerMap: TTMS.lecturerMap,
         };
 
@@ -340,8 +340,8 @@
             return $localStorage.selectedLecturer;
         }
 
-        function getSelectedName() {
-            return new Map($localStorage?.lecturerMap).get(getSelected());
+        function getName(workerId = $localStorage.selectedLecturer) {
+            return new Map($localStorage?.lecturerMap)?.get(workerId);
         }
 
         function select(id) {

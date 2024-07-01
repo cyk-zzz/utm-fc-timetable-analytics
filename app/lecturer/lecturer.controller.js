@@ -20,8 +20,8 @@
 
         vm.getWorkload = WorkloadService.getWorkloadLecturer;
         vm.getColorByValue = WorkloadService.getColorByValue;
-        vm.checkData = checkData;
-        vm.lecturerName = LecturerService.getSelectedName;
+        vm.init = init;
+        vm.lecturerName = LecturerService.getName;
 
         function sortSession(a, b) {
             return a.session_id.localeCompare(b.session_id)
@@ -40,10 +40,12 @@
             updateLineChart();
         }
 
-        function checkData() {
-            SessionService.fetchAll()
+        function init() {
+            WorkloadService.loadWorkloadMap()
+                .then(() => WorkloadService.loadWorkloadByLecturerMap())
+                .then(() => LecturerService.loadLecturerMap())
+                .then(() => SessionService.fetchAll())
                 .then(() => LecturerService.fetchAll(), AuthService.logout)
-                .catch(AuthService.logout);
         }
 
         function updateLineChart() {

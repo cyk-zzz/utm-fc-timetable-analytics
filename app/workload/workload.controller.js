@@ -23,7 +23,7 @@
 
         vm.summaryLabels = ['High', 'Medium High', 'Medium Low', 'Low'];
         vm.summaryData = getWorkloadSummary;
-        vm.summaryColors = ['#FF6685', '#FFB70F', '#FFB70F', '#48C78E'];
+        vm.summaryColors = ['#FF6685', '#FFB70F', '#FFDD8F', '#48C78E'];
         vm.summaryOptions = {
             legend: {
                 display: true,

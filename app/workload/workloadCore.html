@@ -93,6 +93,7 @@
             <table class="table is-narrow is-striped is-bordered is-hoverable">
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>Lecturer Name</th>
 
                         <th>Subjects</th>
@@ -109,6 +110,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="lecturer in workload.getWorkload() | orderBy:workload.sortProperty:workload.reverseOrder | filter:workload.search"">
+                        <td>{{ lecturer.ranking }}</td>
                         <td>{{ lecturer.nama | TitleCase}}</td>
 
                         <td>{{ lecturer.bil_subjek }}</td>
