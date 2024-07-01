@@ -18,8 +18,8 @@
             getAll: getAll,
             getSelected: getSelected,
             select: select,
-
             getSelectedName: getSelectedName,
+            loadLecturerMap: TTMS.lecturerMap,
         };
 
         return service;
@@ -191,7 +191,7 @@
             const lecturerCount = lecturers.length;
 
             if (
-                lecturers.every(x => x.hasOwnProperty('subjects')) == true 
+                lecturers.every(x => x.hasOwnProperty('subjects')) == true
                 && update == false
                 && data?.complete == true
             ) {
@@ -261,10 +261,10 @@
             const lecturerCount = lecturers.length;
 
             if (
-                lecturers.every(x => x.hasOwnProperty('classes')) == true 
+                lecturers.every(x => x.hasOwnProperty('classes')) == true
                 && update == false
                 && data?.complete == true
-            ){
+            ) {
                 $log.debug(`Classes Of Lecturers (${session}-${semester}) in Cache`);
                 deferred.resolve();
                 return deferred.promise;

@@ -6,9 +6,9 @@
         .module('app')
         .factory('TTMS', TTMS)
 
-    TTMS.$inject = ['API', '$q', '$http', '$log'];
+    TTMS.$inject = ['API', '$q', '$http', '$log', '$localStorage'];
 
-    function TTMS(API, $q, $http, $log) {
+    function TTMS(API, $q, $http, $log, $localStorage) {
 
         var service = {
             login: login,
@@ -30,6 +30,10 @@
             ruang: ruang,
             jadual_ruang: jadual_ruang,
             jadual_subjek: jadual_subjek,
+
+            workloadMap: workloadMap,
+            workloadByLecturerMap: workloadByLecturerMap,
+            lecturerMap: lecturerMap,
         };
 
         return service;
@@ -102,6 +106,66 @@
         function jadual_subjek(sesi, semester, kod_subjek, seksyen){
             const url = `${API.URL}entity=jadual_subjek&sesi=${sesi}&semester=${semester}&kod_subjek=${kod_subjek}&seksyen=${seksyen}`;
             return $http.get(url);
+        }
+
+        function workloadMap(url = `http://127.0.0.1:5500/app/workloadMap.json`) {
+            var deferred = $q.defer();
+
+            $http.get(url)
+                .then(fetchSuccess, fetchFail)
+
+            function fetchSuccess(response) {
+                $localStorage.workloadMap = new Map(response.data);
+                $log.debug("Loaded Calculated workloadMap.json")
+                deferred.resolve();
+            }
+
+            function fetchFail(response) {
+                $log.debug("Load workloadMap.json Fail");
+                deferred.resolve();
+            }
+
+            return deferred.promise;
+        }
+
+        function workloadByLecturerMap(url = `http://127.0.0.1:5500/app/workloadByLecturerMap.json`) {
+            var deferred = $q.defer();
+
+            $http.get(url)
+                .then(fetchSuccess, fetchFail)
+
+            function fetchSuccess(response) {
+                $localStorage.workloadByLecturerMap = new Map(response.data);
+                $log.debug("Loaded Calculated workloadByLecturerMap.json")
+                deferred.resolve();
+            }
+
+            function fetchFail(response) {
+                $log.debug("Load workloadByLecturerMap.json Fail");
+                deferred.resolve();
+            }
+
+            return deferred.promise;
+        }
+
+        function lecturerMap(url = `http://127.0.0.1:5500/app/lecturerMap.json`) {
+            var deferred = $q.defer();
+
+            $http.get(url)
+                .then(fetchSuccess, fetchFail)
+
+            function fetchSuccess(response) {
+                $localStorage.lecturerMap = new Map(response.data);
+                $log.debug("Loaded lecturerMap.json")
+                deferred.resolve();
+            }
+
+            function fetchFail(response) {
+                $log.debug("Load lecturerMap.json Fail");
+                deferred.resolve();
+            }
+
+            return deferred.promise;
         }
     }
 }());

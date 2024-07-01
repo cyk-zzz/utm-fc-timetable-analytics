@@ -63,10 +63,6 @@
         vm.selectSession = selectSession;
         vm.refreshColumnChart = refreshColumnChart;
 
-        function init() {
-            init();
-        }
-
         function selectSession(sessionId) {
             if (angular.isDefined(sessionId)) {
                 SessionService.select(sessionId);
@@ -101,18 +97,21 @@
         }
 
         function init() {
-            SessionService.fetchAll()
+            WorkloadService.loadWorkloadMap()
+                .then(() => WorkloadService.loadWorkloadByLecturerMap())
+                .then(() => LecturerService.loadLecturerMap())
+                .then(() => SessionService.fetchAll())
                 .then(() => LecturerService.fetchAll(), AuthService.logout)
                 .then(() => getData(SessionService.getSelected()))
         }
 
         function refreshColumnChart() {
-            if(vm.viewMode != 'columnChart'){
+            if (vm.viewMode != 'columnChart') {
                 return 0;
             }
 
             vm.columnLabels = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder);
-            vm.columnLabels =  vm.columnLabels.map((x) => { return x.nama });
+            vm.columnLabels = vm.columnLabels.map((x) => { return x.nama });
 
             vm.columnSubjects = $filter('orderBy')(WorkloadService?.getWorkload()?.data, vm.sortProperty, vm.reverseOrder);
             vm.columnSubjects = vm.columnSubjects.map((x) => { return x.bil_subjek_norm });

@@ -3,9 +3,9 @@
 
     angular.module("app").factory("WorkloadService", WorkloadService);
 
-    WorkloadService.$inject = ['$log', '$localStorage', 'SessionService', 'StatusService'];
+    WorkloadService.$inject = ['$q', 'TTMS', '$localStorage', 'SessionService', 'StatusService'];
 
-    function WorkloadService($log, $localStorage, SessionService, StatusService) {
+    function WorkloadService($q, TTMS, $localStorage, SessionService, StatusService) {
         var service = {
             calculate: calculate,
 
@@ -15,6 +15,9 @@
 
             getWorkloadLecturer: getWorkloadLecturer,
             getColorByValue: getColorByValue,
+
+            loadWorkloadMap: TTMS.workloadMap,
+            loadWorkloadByLecturerMap: TTMS.workloadByLecturerMap,
         };
 
         return service;
