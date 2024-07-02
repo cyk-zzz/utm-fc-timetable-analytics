@@ -24,7 +24,7 @@
 
         return service;
 
-        function fetchAll(update = false, lastSession = 10) {
+        function fetchAll(update = false, lastSession = -1) {
             var deferred = $q.defer();
 
             // Fetch All Parallel

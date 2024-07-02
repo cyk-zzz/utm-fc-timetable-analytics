@@ -51,10 +51,20 @@
         function updateLineChart() {
             var lecturerName = $filter('TitleCase')(vm.lecturerName());
 
+            vm.columnLabels = WorkloadService.getWorkloadLecturer()
+                ?.sort(sortSession)
+                ?.map((x) => { return $filter('SessionFilter')(x.session_id) });
+
+            vm.columnData = WorkloadService.getWorkloadLecturer()
+                ?.sort(sortSession)
+                ?.map((x) => { return x.overall_workload });
+
+            vm.columnColors = vm.columnData?.map((column) => getColumnColor(column));
+
             vm.columnOptions = {
                 title: {
                     display: true,
-                    text: `${lecturerName}'s Overall Workload Last 10 Semesters`,
+                    text: `${lecturerName}'s Overall Workload Last ${WorkloadService.getWorkloadLecturer()?.length} Semesters`,
                     fontSize: 20,
                 },
                 showLines: false,
@@ -69,20 +79,11 @@
                     xAxes: [{
                         ticks: {
                             minRotation: 35,
-                            fontSize: 20
+                            fontSize: 15
                         }
                     }]
                 }
             };
-            vm.columnLabels = WorkloadService.getWorkloadLecturer()
-                ?.sort(sortSession)
-                ?.map((x) => { return $filter('SessionFilter')(x.session_id) });
-
-            vm.columnData = WorkloadService.getWorkloadLecturer()
-                ?.sort(sortSession)
-                ?.map((x) => { return x.overall_workload });
-
-            vm.columnColors = vm.columnData?.map((column) => getColumnColor(column));
 
             function getColumnColor(value) {
                 if (value == null) return '#FFFFFF';

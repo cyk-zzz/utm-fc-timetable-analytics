@@ -22,6 +22,8 @@
 
         function fetchAll() {
 
+            var removeSemesters = ['200420052', '200520061']
+
             var deferred = $q.defer();
 
             if ($localStorage.sessions) {
@@ -39,11 +41,14 @@
                     deferred.reject("Fetch Sessions Failed");
                 }
                 else {
-                    const sessionSemesterList = response.data;
-                    sessionSemesterList.sort((a, b) => b.sesi_semester_id.localeCompare(a.sesi_semester_id));
-                    $localStorage.sessions = sessionSemesterList;
-                    select(sessionSemesterList[0].sesi_semester_id);
-                    $log.debug("Fetched Session Semester: " + sessionSemesterList.length);
+                    const semesters = response.data;
+                    const sortedSemesters = semesters
+                        .sort((a, b) => b.sesi_semester_id.localeCompare(a.sesi_semester_id))
+                        .filter((x) => !removeSemesters.includes(x.sesi_semester_id));
+
+                    $localStorage.sessions = sortedSemesters;
+                    select(semesters[0].sesi_semester_id);
+                    $log.debug("Fetched Session Semester: " + semesters.length);
                     deferred.resolve("Fetched Session Semester");
                 }
 
@@ -58,7 +63,12 @@
         }
 
         function getAll(lastSession = -1) {
-            return $localStorage?.sessions?.slice(0, lastSession);
+            var sessions = $localStorage?.sessions
+                ?.sort((a, b) => b.sesi_semester_id.localeCompare(a.sesi_semester_id))
+
+            if (lastSession >= 0) sessions = sessions.slice(0, lastSession);
+
+            return sessions;
         }
 
         function getSelected() {

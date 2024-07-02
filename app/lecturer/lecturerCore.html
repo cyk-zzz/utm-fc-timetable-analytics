@@ -26,7 +26,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="workload in lecturer.getWorkload()"">
+                    <tr ng-repeat="workload in lecturer.getWorkload() | orderBy:session_id">
                         <td>{{ workload.session_id | SessionFilter }}</td>
 
                         <td>{{ workload.subjects }}</td>
@@ -49,7 +49,7 @@
          chart-labels="lecturer.columnLabels" 
          chart-colors="lecturer.columnColors" 
          chart-options="lecturer.columnOptions"
-         height="100px"
+         height="150px"
          >
         </canvas>
     </div>
