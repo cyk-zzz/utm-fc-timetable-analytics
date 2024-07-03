@@ -42,29 +42,6 @@
   <script
     src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@1.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-google-chart/0.1.0/ng-google-chart.min.js"
-    integrity="sha512-hXrwBIJyGX8ycV6vLWOggSpQUV4OFLEYYCN2DiM2D68ZN9eAm4UAzk1nqOWh1HrZxk5eEoixUEVZXgtu/QPHBA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-  <!-- Development -->
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.3/angular.js"
-    integrity="sha512-klc+qN5PPscoGxSzFpetVsCr9sryi2e2vHwZKq43FdFyhSAa7vAqog/Ifl8tzg/8mBZiG2MAKhyjH5oPJp65EA=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.1.0/angular-ui-router.js"
-    integrity="sha512-ftmRxP7cYZRj3uBVtTLTXU8QwkcOu2fuVaWqyKpMS40CVRns5TtQGesezvqGI+Eb6B+SuUQLjoHYdoJvDcD7/w=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-i18n/1.8.3/angular-locale_en-my.min.js"
-    integrity="sha512-WSWyZkpntVmMW7xGqSCIvzo+rcA5egXt8CqtF7yKKeZDeXdr1C2VBNXbdbqkqdUNB/U3XDAYCXj4j6iOKbR2+g=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-translate/2.19.1/angular-translate.js"
-    integrity="sha512-6OW/mHzHtmIX4oH1C1FXbEn/h+0Ukbq9tpk22uk1cQyCrDY62rVYFCVUSUfbJJxBz1BK1L1y0vNfMjmeGL+Rvw=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.8.3/angular-sanitize.js"
-    integrity="sha512-WsrQol2t85bun8XdIkjqTbNLgY54bCBgVZw+B+00eVritDAlCAcfYo92/53rFp63cKZpDa7t5r5lDDeKFcbUAQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.11/ngStorage.js"
-    integrity="sha512-c2T3C9cjX/WQscZb+Qws0CqbPujwNik3JPOzn4r/PwHDYdIVxC+LXOY51+4qAsR2wutl7iC0at47X1EIroFq5A=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
-
   <!-- Module -->
   <script type="text/javascript" src="app.module.js"></script>
   <script type="text/javascript" src="app.constant.js"></script>
@@ -94,6 +71,9 @@
   <script type="text/javascript" src="filter/session.filter.js"></script>
   <script type="text/javascript" src="filter/titleCase.filter.js"></script>
 
+  <!-- unit-testing -->
+  <script type="text/javascript" src="testing/sessionFilter.test.js"></script>
+
   <!-- Styling -->
   <link rel="stylesheet" href="app.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
@@ -111,7 +91,7 @@
 
 <body>
   <div ng-app="app" ng-init="" class="hero is-fullheight">
-    
+
     <ui-view class="hero is-fullheight"></ui-view>
 
     <ng-include class="" src="'components/footer.html'"></ng-include>
