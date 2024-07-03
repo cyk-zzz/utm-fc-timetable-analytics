@@ -14,11 +14,7 @@
         vm.getAllName = Array.from(LecturerService.getAll(), ([id, name]) => ({ id, name }))
             .sort(sortName);
 
-        function sortName(a, b) {
-            return a.name.localeCompare(b.name)
-        }
-
-        vm.getWorkload = WorkloadService.getWorkloadLecturer;
+        vm.getWorkload = () => {return WorkloadService.getWorkloadLecturer().sort(sortSession)};
         vm.getColorByValue = WorkloadService.getColorByValue;
         vm.init = init;
         vm.lecturerName = LecturerService.getName;
@@ -27,12 +23,13 @@
             return a.session_id.localeCompare(b.session_id)
         }
 
-        updateLineChart()
+        function sortName(a, b) {
+            return a.name.localeCompare(b.name)
+        }
 
         function select(value) {
             if (angular.isDefined(value)) {
                 LecturerService.select(value);
-
             } else {
                 return LecturerService.getSelected();
             }
@@ -46,6 +43,7 @@
                 .then(() => LecturerService.loadLecturerMap())
                 .then(() => SessionService.fetchAll())
                 .then(() => LecturerService.fetchAll(), AuthService.logout)
+                .then(()=>  updateLineChart())
         }
 
         function updateLineChart() {

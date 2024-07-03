@@ -108,7 +108,7 @@
             return $http.get(url);
         }
 
-        function workloadMap(url = `http://127.0.0.1:5500/app/workloadMap.json`) {
+        function workloadMap(url = `http://web.fc.utm.my/mobile/timetable/analytic/JSON/workloadMap.json`) {
             var deferred = $q.defer();
 
             $http.get(url)
@@ -130,7 +130,7 @@
             return deferred.promise;
         }
 
-        function workloadByLecturerMap(url = `http://127.0.0.1:5500/app/workloadByLecturerMap.json`) {
+        function workloadByLecturerMap(url = `http://web.fc.utm.my/mobile/timetable/analytic/JSON/workloadByLecturerMap.json`) {
             var deferred = $q.defer();
 
             $http.get(url)
@@ -152,7 +152,7 @@
             return deferred.promise;
         }
 
-        function lecturerMap(url = `http://127.0.0.1:5500/app/lecturerMap.json`) {
+        function lecturerMap(url = `http://web.fc.utm.my/mobile/timetable/analytic/JSON/lecturerMap.json`) {
             var deferred = $q.defer();
 
             $http.get(url)
