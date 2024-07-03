@@ -14,7 +14,7 @@
         vm.getAllName = Array.from(LecturerService.getAll(), ([id, name]) => ({ id, name }))
             .sort(sortName);
 
-        vm.getWorkload = () => {return WorkloadService.getWorkloadLecturer().sort(sortSession)};
+        vm.getWorkload = () => {return WorkloadService.getWorkloadLecturer()?.sort(sortSession)};
         vm.getColorByValue = WorkloadService.getColorByValue;
         vm.init = init;
         vm.lecturerName = LecturerService.getName;
