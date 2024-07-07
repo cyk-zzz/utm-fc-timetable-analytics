@@ -29,7 +29,16 @@
 - Red '#FF6685'
 
 # Feature
-- 
+- Detects Incomplete Data
+- Switch between Table and Column Chart
+- Compare workload between Lecturers in 1 Sessions
+- Compare a lecturer's workload across all sessions
+- Fetch pre-calculated JSON available
+- Automated Unit Testing with Vitest
+
+# Unit Testing
+For More Details Please Refer
+[/testing/unit/README.md](/testing/unit/README.md)
 
 # Reference
 - [AngularJS Style Guide JohnPapa](https://github.com/johnpapa/angular-styleguide/blob/master/a1/README.md#application-structure-lift-principles)
