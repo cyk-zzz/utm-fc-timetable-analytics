@@ -34,9 +34,16 @@
 - Compare workload between Lecturers in 1 Sessions
 - Compare a lecturer's workload across all sessions
 - Fetch pre-calculated JSON available
+- Implemented fetch chaining to fetch data sequentically according to semester.
+- Implemented localStorage to cache calculated data.
+- Implemented minified js to reduce file size.
+- Utilized cdnjs CDN to reduce server traffic of UTM-FC.
+- Implemented minified JavaScript file to reduce file size.
+
+# Improvement
 - Automated Unit Testing with Vitest
 
-# Unit Testing
+# Unit Testing (Incomplete)
 For More Details Please Refer
 [/testing/unit/README.md](/testing/unit/README.md)
 
