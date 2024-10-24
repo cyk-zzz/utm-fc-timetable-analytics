@@ -40,6 +40,15 @@
 - Utilized cdnjs CDN to reduce server traffic of UTM-FC.
 - Implemented minified JavaScript file to reduce file size.
 
+## Docker Build
+```docker build -t timetable-a .```
+
+## Docker Run
+```docker run --name timetable-a -p 8080:80 -d timetable-a```
+
+## Docker Stop
+```docker stop timetable-a```
+
 # Improvement
 - Automated Unit Testing with Vitest
 
